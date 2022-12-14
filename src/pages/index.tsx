@@ -1132,7 +1132,7 @@ const Home = () => {
   return (
     <>
       {(hasPawnReachedEnd || isGameOver) && (
-        <div className="w-full h-full fixed z-30">
+        <div className="w-full h-full absolute z-30">
           <div
             style={{ background: "rgba(239, 239, 240, 0.6)" }}
             className="w-[300px] h-[300px] mx-auto mt-[200px] flex flex-col justify-center items-center border border-2"
