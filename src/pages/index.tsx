@@ -1151,7 +1151,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="w-full py-2 grid grid-cols-3">
+      <div className="w-full fixed bg-white py-2 grid grid-cols-3">
         <button
           disabled={previousStates.current.length < 2}
           onClick={handleBackClick}
