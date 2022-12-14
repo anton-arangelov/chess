@@ -1,5 +1,6 @@
 import { initialWhiteFigures, initialBlackFigures } from "../pages/index";
 import classNames from "classnames";
+import { useEffect, useState } from "react";
 
 type FiguresProps = {
   areWhiteFigures?: boolean;
@@ -19,6 +20,11 @@ export const Figures = ({
   isWhiteTurn,
   handleFigureClicked,
 }: FiguresProps) => {
+  const [width, setWidth] = useState<number>();
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, []);
+
   return (
     <>
       {Object.values(figures).map(
@@ -31,11 +37,17 @@ export const Figures = ({
                   handleFigureClicked(figure, positionX, positionY, role)
                 }
                 style={{
-                  top: positionY * 60 - 57,
-                  left: positionX * 60 - 57,
+                  top:
+                    width && width > 639
+                      ? positionY * 60 - 57
+                      : positionY * 60 - 50,
+                  left:
+                    width && width > 639
+                      ? positionX * 60 - 57
+                      : positionX * 37.5 - 37.5,
                 }}
                 className={classNames(
-                  "border border-transparent border-[4px] rounded absolute",
+                  "border border-transparent border-[4px] rounded absolute max-w-[37.5px] sm:max-w-none",
                   "flex items-center justify-center focus:border focus:border-[#14b8a6] focus:border-[4px]",
                   {
                     "z-10": !areWhiteFigures,

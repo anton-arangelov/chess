@@ -36,7 +36,7 @@ export const Board = ({
           >
             {index + 1}
             {clickedFigure && el.isReachable && (
-              <div className="h-[10px] w-[10px] z-20 rounded-full bg-[#14b8a6] m-auto absolute top-[25px] left-[25px]" />
+              <div className="h-[10px] w-[10px] z-20 rounded-full bg-[#14b8a6] m-auto absolute top-[25px] left-[14px] sm:left-[25px]" />
             )}
           </div>
         );

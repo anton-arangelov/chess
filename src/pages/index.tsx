@@ -1151,7 +1151,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="w-full fixed bg-white py-2 grid grid-cols-3">
+      <div className="w-full md:fixed bg-white py-2 grid grid-cols-3">
         <button
           disabled={previousStates.current.length < 2}
           onClick={handleBackClick}
@@ -1174,7 +1174,7 @@ const Home = () => {
       >
         <div
           className={classNames(
-            "relative m-auto w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8"
+            "relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8"
           )}
         >
           <Figures
