@@ -10,7 +10,6 @@ import {
   handleOfficerPossibleMovements,
   handleRookPossibleMovements,
 } from "../config/helpers";
-import NextImage from "next/image";
 // import { gql } from "@apollo/client";
 // import client from "../../apollo-client";
 
@@ -47,7 +46,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "leftRook",
     image: (
-      <NextImage
+      <img
         alt="rlt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Chess_rlt45.svg/45px-Chess_rlt45.svg.png"
       />
@@ -60,7 +59,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "leftHorse",
     image: (
-      <NextImage
+      <img
         alt="nlt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Chess_nlt45.svg/45px-Chess_nlt45.svg.png"
       />
@@ -73,7 +72,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "leftOfficer",
     image: (
-      <NextImage
+      <img
         alt="blt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Chess_blt45.svg/45px-Chess_blt45.svg.png"
       />
@@ -86,7 +85,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "queen",
     image: (
-      <NextImage
+      <img
         alt="qlt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Chess_qlt45.svg/45px-Chess_qlt45.svg.png"
       />
@@ -99,7 +98,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "king",
     image: (
-      <NextImage
+      <img
         alt="klt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Chess_klt45.svg/45px-Chess_klt45.svg.png"
       />
@@ -112,7 +111,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "rightOfficer",
     image: (
-      <NextImage
+      <img
         alt="blt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Chess_blt45.svg/45px-Chess_blt45.svg.png"
       />
@@ -125,7 +124,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "rightHorse",
     image: (
-      <NextImage
+      <img
         alt="nlt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Chess_nlt45.svg/45px-Chess_nlt45.svg.png"
       />
@@ -138,7 +137,7 @@ export const initialWhiteFigures = {
     positionY: 8,
     role: "rightRook",
     image: (
-      <NextImage
+      <img
         alt="rlt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Chess_rlt45.svg/45px-Chess_rlt45.svg.png"
       />
@@ -151,7 +150,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_1",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -164,7 +163,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_2",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -177,7 +176,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_3",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -190,7 +189,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_4",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -203,7 +202,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_5",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -216,7 +215,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_6",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -229,7 +228,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_7",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -242,7 +241,7 @@ export const initialWhiteFigures = {
     positionY: 7,
     role: "pawn_8",
     image: (
-      <NextImage
+      <img
         alt="plt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png"
       />
@@ -258,10 +257,10 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "leftRook",
     image: (
-      <NextImage
+      <img
         alt="rdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Chess_rdt45.svg/45px-Chess_rdt45.svg.png"
-      />
+      ></img>
     ),
   },
   leftHorse: {
@@ -271,7 +270,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "leftHorse",
     image: (
-      <NextImage
+      <img
         alt="ndt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Chess_ndt45.svg/45px-Chess_ndt45.svg.png"
       />
@@ -284,7 +283,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "leftOfficer",
     image: (
-      <NextImage
+      <img
         alt="bdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Chess_bdt45.svg/45px-Chess_bdt45.svg.png"
       />
@@ -297,7 +296,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "queen",
     image: (
-      <NextImage
+      <img
         alt="qdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Chess_qdt45.svg/45px-Chess_qdt45.svg.png"
       />
@@ -310,7 +309,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "king",
     image: (
-      <NextImage
+      <img
         alt="kdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Chess_kdt45.svg/45px-Chess_kdt45.svg.png"
       />
@@ -323,7 +322,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "rightOfficer",
     image: (
-      <NextImage
+      <img
         alt="bdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Chess_bdt45.svg/45px-Chess_bdt45.svg.png"
       />
@@ -336,7 +335,7 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "rightHorse",
     image: (
-      <NextImage
+      <img
         alt="ndt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Chess_ndt45.svg/45px-Chess_ndt45.svg.png"
       />
@@ -349,10 +348,10 @@ export const initialBlackFigures = {
     positionY: 1,
     role: "rightRook",
     image: (
-      <NextImage
+      <img
         alt="rdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Chess_rdt45.svg/45px-Chess_rdt45.svg.png"
-      />
+      ></img>
     ),
   },
   pawn_1: {
@@ -362,7 +361,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_1",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -375,7 +374,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_2",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -388,7 +387,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_3",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -401,7 +400,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_4",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -414,7 +413,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_5",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -427,7 +426,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_6",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -440,7 +439,7 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_7",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
       />
@@ -453,10 +452,12 @@ export const initialBlackFigures = {
     positionY: 2,
     role: "pawn_8",
     image: (
-      <NextImage
+      <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
-      ></NextImage>
+        width={4}
+        height={4}
+      />
     ),
   },
 };
