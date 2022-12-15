@@ -1130,7 +1130,7 @@ const Home = () => {
   }, [board, whiteFigures, blackFigures, isMoving]);
 
   return (
-    <>
+    <div className="h-screen grid grid-rows-[40px]">
       {(hasPawnReachedEnd || isGameOver) && (
         <div className="w-full h-full absolute z-30">
           <div
@@ -1151,7 +1151,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="w-full md:fixed bg-white py-2 grid grid-cols-3">
+      <div className="w-full bg-white py-2 grid grid-cols-3">
         <button
           disabled={previousStates.current.length < 2}
           onClick={handleBackClick}
@@ -1169,14 +1169,8 @@ const Home = () => {
           Reset
         </button>
       </div>
-      <div
-        className={classNames("w-full h-screen flex items-center bg-[#f5f5f5]")}
-      >
-        <div
-          className={classNames(
-            "relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8"
-          )}
-        >
+      <div className="w-full flex items-center bg-[#f5f5f5]">
+        <div className="relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8">
           <Figures
             figures={blackFigures}
             isWhiteTurn={isWhiteTurn}
@@ -1195,7 +1189,7 @@ const Home = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
