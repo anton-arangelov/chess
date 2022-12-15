@@ -2,12 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { Board } from "../components/Board";
 import { Figures } from "../components/Figures";
+import ClientOnly from "../components/ClientOnly";
+import Titles from "../components/Titles";
 import { FIGURES, OCCUPIED_BY } from "../config/constants";
 import { PreviousStates } from "../config/types";
 import {
   handleOfficerPossibleMovements,
   handleRookPossibleMovements,
 } from "../config/helpers";
+// import { gql } from "@apollo/client";
+// import client from "../../apollo-client";
 
 export const initialBoard: {
   [key: number]: { isOccupiedBy?: string | undefined; isReachable: boolean };
@@ -1189,8 +1193,25 @@ const Home = () => {
           />
         </div>
       </div>
+      <ClientOnly>
+        <Titles />
+      </ClientOnly>
     </div>
   );
 };
+
+// export const getStaticProps = async () => {
+//   const { data } = await client.query({
+//     query: gql`
+//       query GetChess {
+//         getChess {
+//           title
+//         }
+//       }
+//     `,
+//   });
+//   console.log("data is", data);
+//   return { props: { data: data.getChess } };
+// };
 
 export default Home;
