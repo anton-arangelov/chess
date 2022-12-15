@@ -455,8 +455,6 @@ export const initialBlackFigures = {
       <img
         alt="pdt"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png"
-        width={4}
-        height={4}
       />
     ),
   },
