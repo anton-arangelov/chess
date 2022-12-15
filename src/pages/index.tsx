@@ -1193,9 +1193,6 @@ const Home = () => {
           />
         </div>
       </div>
-      <ClientOnly>
-        <Titles />
-      </ClientOnly>
     </div>
   );
 };
