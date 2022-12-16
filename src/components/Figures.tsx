@@ -1,29 +1,29 @@
-import { initialWhiteFigures, initialBlackFigures } from "../pages/index";
-import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { initialWhiteFigures, initialBlackFigures } from '../pages/index'
+import classNames from 'classnames'
+import { useEffect, useState } from 'react'
 
 type FiguresProps = {
-  areWhiteFigures?: boolean;
-  figures: typeof initialWhiteFigures | typeof initialBlackFigures;
-  isWhiteTurn: boolean;
+  areWhiteFigures?: boolean
+  figures: typeof initialWhiteFigures | typeof initialBlackFigures
+  isWhiteTurn: boolean
   handleFigureClicked: (
     figure: string,
     positionX: number,
     positionY: number,
     role: string
-  ) => void;
-};
+  ) => void
+}
 
 export const Figures = ({
   areWhiteFigures = false,
   figures,
   isWhiteTurn,
-  handleFigureClicked,
+  handleFigureClicked
 }: FiguresProps) => {
-  const [width, setWidth] = useState<number>();
+  const [width, setWidth] = useState<number>()
   useEffect(() => {
-    setWidth(window.innerWidth);
-  }, []);
+    setWidth(window.innerWidth)
+  }, [])
 
   return (
     <>
@@ -44,25 +44,25 @@ export const Figures = ({
                   left:
                     width && width > 639
                       ? positionX * 60 - 57
-                      : positionX * 37.5 - 37.5,
+                      : positionX * 37.5 - 37.5
                 }}
                 className={classNames(
-                  "border border-transparent border-[4px] rounded absolute max-w-[37.5px] sm:max-w-none",
-                  "flex items-center justify-center focus:border focus:border-[#14b8a6] focus:border-[4px]",
+                  'border border-transparent border-[4px] rounded absolute max-w-[37.5px] sm:max-w-none',
+                  'flex items-center justify-center focus:border focus:border-[#14b8a6] focus:border-[4px]',
                   {
-                    "z-10": !areWhiteFigures,
-                    "pointer-events-none":
+                    'z-10': !areWhiteFigures,
+                    'pointer-events-none':
                       (isWhiteTurn && !areWhiteFigures) ||
-                      (!isWhiteTurn && areWhiteFigures),
+                      (!isWhiteTurn && areWhiteFigures)
                   }
                 )}
               >
                 <img alt={image.props.alt} src={image.props.src} />
               </button>
-            );
+            )
           }
         }
       )}
     </>
-  );
-};
+  )
+}
