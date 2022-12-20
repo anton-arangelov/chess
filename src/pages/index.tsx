@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import classNames from 'classnames'
 import { Board } from '../components/Board'
 import { Figures } from '../components/Figures'
@@ -10,8 +10,21 @@ import {
   handleOfficerPossibleMovements,
   handleRookPossibleMovements
 } from '../config/helpers'
-// import { gql } from "@apollo/client";
-// import client from "../../apollo-client";
+import { useQuery, gql, useMutation, useSubscription } from '@apollo/client'
+type Figure = {
+  id: string
+}
+
+const first = new Map([
+  [
+    'A',
+    new Map([
+      [1, null],
+      [2, null],
+      [3, null]
+    ])
+  ]
+])
 
 export const initialBoard: {
   [key: number]: { isOccupiedBy?: string | undefined; isReachable: boolean }
@@ -464,6 +477,22 @@ export type InitialBoardType = typeof initialBoard
 export type InitialWhiteFiguresType = typeof initialWhiteFigures
 export type InitialBlackFiguresType = typeof initialBlackFigures
 
+const MUTATION = gql`
+  mutation ChangeName($title: String!) {
+    changeName(title: $title) {
+      title
+    }
+  }
+`
+
+const SUBSCRIPTION = gql`
+  subscription Subscription {
+    titleChanged {
+      title
+    }
+  }
+`
+
 const Home = () => {
   const [board, setBoard] = useState(initialBoard)
   const [whiteFigures, setWhiteFigures] = useState(initialWhiteFigures)
@@ -490,9 +519,23 @@ const Home = () => {
     | undefined
   >(undefined)
   const [isMoving, setIsMoving] = useState(false)
+  const [isFirstPlayer, setIsFirstPlayer] = useState(false)
+  const [isMultiplayer, setIsMultiplayer] = useState(false)
+  const [isSubscriptionDataReady, setIsSubscriptionDataReady] = useState(false)
   const temporaryWhitePawnPosition = useRef<number | undefined>(undefined)
   const temporaryBlackPawnPosition = useRef<number | undefined>(undefined)
-  const previousStates = useRef<PreviousStates[]>([])
+  const previousStatesRef = useRef<PreviousStates[]>([])
+  const isCurrentPlayerRef = useRef(false)
+
+  const [
+    mutateFunction
+    // { data: mutationData, loading: mutationLoading, error: mutationError }
+  ] = useMutation(MUTATION)
+  const {
+    data: subscriptionData,
+    loading: subscriptionLoading,
+    error: subscriptionError
+  } = useSubscription(SUBSCRIPTION)
 
   const handleFigureClicked = (
     figure: string,
@@ -508,6 +551,9 @@ const Home = () => {
     }
     if (!isWhiteTurn && temporaryBlackPawnPosition.current) {
       temporaryBlackPawnPosition.current = undefined
+    }
+    if (isMultiplayer) {
+      isCurrentPlayerRef.current = true
     }
 
     const position = 8 * (positionY - 1) + positionX
@@ -858,218 +904,245 @@ const Home = () => {
     setBoard(newBoard)
   }
 
-  const handleMoveFigure = (isReachable: boolean, position: number) => {
-    if (!isReachable || !clickedFigure) {
-      return
-    }
-    setIsMoving(true)
-    let wasAttacked = false
-    const newX = position % 8
-    let newY = Math.floor(position / 8) + 1
-    if (newX === 0) {
-      newY--
-    }
-
-    //Temporary white pawn
-    if (isWhiteTurn && clickedFigure.figure === FIGURES.PAWN && newY === 5) {
-      temporaryWhitePawnPosition.current = position + 8
-    }
-
-    //Temporary black pawn
-    if (!isWhiteTurn && clickedFigure.figure === FIGURES.PAWN && newY === 4) {
-      temporaryBlackPawnPosition.current = position - 8
-    }
-
-    const hasPawnReachedEndHelper =
-      clickedFigure.figure === FIGURES.PAWN && (newY === 1 || newY === 8)
-    if (hasPawnReachedEndHelper) {
-      setHasPawnReachedEnd(true)
-    }
-
-    //Setting the board
-    const newBoard = JSON.parse(JSON.stringify(board))
-    const clickedFigureOldPosition =
-      (clickedFigure.positionY - 1) * 8 + clickedFigure.positionX
-
-    newBoard[clickedFigureOldPosition].isOccupiedBy = undefined
-    if (newBoard[position].isOccupiedBy) {
-      wasAttacked = true
-    }
-
-    //If a pawn was attacked by diagonal
-    if (
-      clickedFigure.figure === FIGURES.PAWN &&
-      ((isWhiteTurn && position === temporaryBlackPawnPosition.current) ||
-        (!isWhiteTurn && position === temporaryWhitePawnPosition.current))
-    ) {
-      wasAttacked = true
-      if (isWhiteTurn) {
-        newBoard[position + 8].isOccupiedBy = undefined
+  const handleMoveFigure = useCallback(
+    (position: number) => {
+      if (!clickedFigure) {
+        return
       }
-      if (!isWhiteTurn) {
-        newBoard[position - 8].isOccupiedBy = undefined
+      setIsMoving(true)
+      let wasAttacked = false
+      const newX = position % 8
+      let newY = Math.floor(position / 8) + 1
+      if (newX === 0) {
+        newY--
       }
-    }
 
-    //If there was a cast between king and rook
-    if (castExchange.current) {
-      if (position === 63) {
-        newBoard[64].isOccupiedBy = undefined
-        newBoard[62].isOccupiedBy = OCCUPIED_BY.WHITE_FIGURES
+      //Temporary white pawn
+      if (isWhiteTurn && clickedFigure.figure === FIGURES.PAWN && newY === 5) {
+        temporaryWhitePawnPosition.current = position + 8
       }
-      if (position === 58) {
-        newBoard[57].isOccupiedBy = undefined
-        newBoard[59].isOccupiedBy = OCCUPIED_BY.WHITE_FIGURES
-      }
-      if (position === 7) {
-        newBoard[8].isOccupiedBy = undefined
-        newBoard[6].isOccupiedBy = OCCUPIED_BY.BLACK_FIGURES
-      }
-      if (position === 2) {
-        newBoard[1].isOccupiedBy = undefined
-        newBoard[3].isOccupiedBy = OCCUPIED_BY.BLACK_FIGURES
-      }
-    }
 
-    newBoard[position].isOccupiedBy = isWhiteTurn
-      ? OCCUPIED_BY.WHITE_FIGURES
-      : OCCUPIED_BY.BLACK_FIGURES
-    Object.keys(newBoard).forEach(keyIndex => {
-      newBoard[keyIndex].isReachable = false
-    })
-    setBoard(newBoard)
+      //Temporary black pawn
+      if (!isWhiteTurn && clickedFigure.figure === FIGURES.PAWN && newY === 4) {
+        temporaryBlackPawnPosition.current = position - 8
+      }
 
-    //Setting the figures
-    if (isWhiteTurn && !hasPawnReachedEndHelper) {
-      setWhiteFigures(prev => {
-        return {
-          ...prev,
-          [clickedFigure.role]: {
-            ...prev[clickedFigure.role as keyof typeof prev],
-            positionX: newX !== 0 ? newX : 8,
-            positionY: newY
-          },
-          ...(castExchange.current?.isBottomRightRook &&
-            position === 63 && {
-              ['rightRook']: { ...prev['rightRook'], positionX: 6 }
-            }),
-          ...(castExchange.current?.isBottomLeftRook &&
-            position === 58 && {
-              ['leftRook']: { ...prev['leftRook'], positionX: 3 }
-            })
+      const hasPawnReachedEndHelper =
+        clickedFigure.figure === FIGURES.PAWN && (newY === 1 || newY === 8)
+      if (hasPawnReachedEndHelper) {
+        setHasPawnReachedEnd(true)
+      }
+
+      //Setting the board
+      const newBoard = JSON.parse(JSON.stringify(board))
+      const clickedFigureOldPosition =
+        (clickedFigure.positionY - 1) * 8 + clickedFigure.positionX
+
+      newBoard[clickedFigureOldPosition].isOccupiedBy = undefined
+      if (newBoard[position].isOccupiedBy) {
+        wasAttacked = true
+      }
+
+      //If a pawn was attacked by diagonal
+      if (
+        clickedFigure.figure === FIGURES.PAWN &&
+        ((isWhiteTurn && position === temporaryBlackPawnPosition.current) ||
+          (!isWhiteTurn && position === temporaryWhitePawnPosition.current))
+      ) {
+        wasAttacked = true
+        if (isWhiteTurn) {
+          newBoard[position + 8].isOccupiedBy = undefined
         }
+        if (!isWhiteTurn) {
+          newBoard[position - 8].isOccupiedBy = undefined
+        }
+      }
+
+      //If there was a cast between king and rook
+      if (castExchange.current) {
+        if (position === 63) {
+          newBoard[64].isOccupiedBy = undefined
+          newBoard[62].isOccupiedBy = OCCUPIED_BY.WHITE_FIGURES
+        }
+        if (position === 58) {
+          newBoard[57].isOccupiedBy = undefined
+          newBoard[59].isOccupiedBy = OCCUPIED_BY.WHITE_FIGURES
+        }
+        if (position === 7) {
+          newBoard[8].isOccupiedBy = undefined
+          newBoard[6].isOccupiedBy = OCCUPIED_BY.BLACK_FIGURES
+        }
+        if (position === 2) {
+          newBoard[1].isOccupiedBy = undefined
+          newBoard[3].isOccupiedBy = OCCUPIED_BY.BLACK_FIGURES
+        }
+      }
+
+      newBoard[position].isOccupiedBy = isWhiteTurn
+        ? OCCUPIED_BY.WHITE_FIGURES
+        : OCCUPIED_BY.BLACK_FIGURES
+      Object.keys(newBoard).forEach(keyIndex => {
+        newBoard[keyIndex].isReachable = false
       })
-    }
+      setBoard(newBoard)
+      let whites, blacks
+      const parsedWhiteFigures = JSON.parse(JSON.stringify(whiteFigures))
+      const parsedBlackFigures = JSON.parse(JSON.stringify(blackFigures))
 
-    if (isWhiteTurn && hasPawnReachedEndHelper) {
-      setWhiteFigures(prev => {
-        return {
-          ...prev,
-          [clickedFigure.role]: {
-            ...initialWhiteFigures.queen,
-            positionX: newX !== 0 ? newX : 8,
-            positionY: newY,
-            role: clickedFigure.role
-          }
-        }
-      })
-    }
-
-    if (isWhiteTurn && wasAttacked) {
-      let attackedFigure = Object.values(blackFigures).find(
-        ({ positionX, positionY }) => {
-          return positionX === (newX !== 0 ? newX : 8) && positionY === newY
-        }
-      )
-      //if the attacked figure was a pawn on diagonal
-      if (!attackedFigure) {
-        attackedFigure = Object.values(blackFigures).find(
-          ({ positionX, positionY }) => {
-            return (
-              positionX === (newX !== 0 ? newX : 8) && positionY === newY + 1
-            )
-          }
-        )
-      }
-      if (attackedFigure && attackedFigure.role) {
-        setBlackFigures(prev => {
-          return {
-            ...prev,
-            [attackedFigure?.role as keyof typeof prev]: {
-              ...prev[attackedFigure?.role as keyof typeof prev],
-              isAlive: false
-            }
-          }
-        })
-      }
-    }
-
-    if (!isWhiteTurn && !hasPawnReachedEndHelper) {
-      setBlackFigures(prev => {
-        return {
-          ...prev,
-          [clickedFigure.role]: {
-            ...prev[clickedFigure.role as keyof typeof prev],
-            positionX: newX !== 0 ? newX : 8,
-            positionY: newY
-          },
-          ...(castExchange.current?.isTopRightRook &&
-            position === 7 && {
-              ['rightRook']: { ...prev['rightRook'], positionX: 6 }
-            }),
-          ...(castExchange.current?.isTopLeftRook &&
-            position === 2 && {
-              ['leftRook']: { ...prev['leftRook'], positionX: 3 }
-            })
-        }
-      })
-    }
-
-    if (!isWhiteTurn && hasPawnReachedEndHelper) {
-      setBlackFigures(prev => {
-        return {
-          ...prev,
-          [clickedFigure.role]: {
-            ...initialBlackFigures.queen,
-            positionX: newX !== 0 ? newX : 8,
-            positionY: newY,
-            role: clickedFigure.role
-          }
-        }
-      })
-    }
-
-    if (!isWhiteTurn && wasAttacked) {
-      let attackedFigure = Object.values(whiteFigures).find(
-        ({ positionX, positionY }) => {
-          return positionX === (newX !== 0 ? newX : 8) && positionY === newY
-        }
-      )
-      //if the attacked figure was a pawn on diagonal
-      if (!attackedFigure) {
-        attackedFigure = Object.values(whiteFigures).find(
-          ({ positionX, positionY }) => {
-            return (
-              positionX === (newX !== 0 ? newX : 8) && positionY === newY - 1
-            )
-          }
-        )
-      }
-      if (attackedFigure && attackedFigure.role) {
+      //Setting the figures
+      if (isWhiteTurn && !hasPawnReachedEndHelper) {
         setWhiteFigures(prev => {
           return {
             ...prev,
-            [attackedFigure?.role as keyof typeof prev]: {
-              ...prev[attackedFigure?.role as keyof typeof prev],
-              isAlive: false
+            [clickedFigure.role]: {
+              ...prev[clickedFigure.role as keyof typeof prev],
+              positionX: newX !== 0 ? newX : 8,
+              positionY: newY
+            },
+            ...(castExchange.current?.isBottomRightRook &&
+              position === 63 && {
+                ['rightRook']: { ...prev['rightRook'], positionX: 6 }
+              }),
+            ...(castExchange.current?.isBottomLeftRook &&
+              position === 58 && {
+                ['leftRook']: { ...prev['leftRook'], positionX: 3 }
+              })
+          }
+        })
+      }
+
+      if (isWhiteTurn && hasPawnReachedEndHelper) {
+        setWhiteFigures(prev => {
+          return {
+            ...prev,
+            [clickedFigure.role]: {
+              ...initialWhiteFigures.queen,
+              positionX: newX !== 0 ? newX : 8,
+              positionY: newY,
+              role: clickedFigure.role
             }
           }
         })
       }
-    }
-    setClickedFigure(undefined)
-    setIsWhiteTurn(prev => !prev)
-  }
+
+      if (isWhiteTurn && wasAttacked) {
+        let attackedFigure = Object.values(blackFigures).find(
+          ({ positionX, positionY }) => {
+            return positionX === (newX !== 0 ? newX : 8) && positionY === newY
+          }
+        )
+        //if the attacked figure was a pawn on diagonal
+        if (!attackedFigure) {
+          attackedFigure = Object.values(blackFigures).find(
+            ({ positionX, positionY }) => {
+              return (
+                positionX === (newX !== 0 ? newX : 8) && positionY === newY + 1
+              )
+            }
+          )
+        }
+        if (attackedFigure && attackedFigure.role) {
+          setBlackFigures(prev => {
+            return {
+              ...prev,
+              [attackedFigure?.role as keyof typeof prev]: {
+                ...prev[attackedFigure?.role as keyof typeof prev],
+                isAlive: false
+              }
+            }
+          })
+        }
+      }
+
+      if (!isWhiteTurn && !hasPawnReachedEndHelper) {
+        setBlackFigures(prev => {
+          return {
+            ...prev,
+            [clickedFigure.role]: {
+              ...prev[clickedFigure.role as keyof typeof prev],
+              positionX: newX !== 0 ? newX : 8,
+              positionY: newY
+            },
+            ...(castExchange.current?.isTopRightRook &&
+              position === 7 && {
+                ['rightRook']: { ...prev['rightRook'], positionX: 6 }
+              }),
+            ...(castExchange.current?.isTopLeftRook &&
+              position === 2 && {
+                ['leftRook']: { ...prev['leftRook'], positionX: 3 }
+              })
+          }
+        })
+      }
+
+      if (!isWhiteTurn && hasPawnReachedEndHelper) {
+        setBlackFigures(prev => {
+          return {
+            ...prev,
+            [clickedFigure.role]: {
+              ...initialBlackFigures.queen,
+              positionX: newX !== 0 ? newX : 8,
+              positionY: newY,
+              role: clickedFigure.role
+            }
+          }
+        })
+      }
+
+      if (!isWhiteTurn && wasAttacked) {
+        let attackedFigure = Object.values(whiteFigures).find(
+          ({ positionX, positionY }) => {
+            return positionX === (newX !== 0 ? newX : 8) && positionY === newY
+          }
+        )
+        //if the attacked figure was a pawn on diagonal
+        if (!attackedFigure) {
+          attackedFigure = Object.values(whiteFigures).find(
+            ({ positionX, positionY }) => {
+              return (
+                positionX === (newX !== 0 ? newX : 8) && positionY === newY - 1
+              )
+            }
+          )
+        }
+        if (attackedFigure && attackedFigure.role) {
+          setWhiteFigures(prev => {
+            return {
+              ...prev,
+              [attackedFigure?.role as keyof typeof prev]: {
+                ...prev[attackedFigure?.role as keyof typeof prev],
+                isAlive: false
+              }
+            }
+          })
+        }
+      }
+      console.log('here')
+      if (isMultiplayer && isCurrentPlayerRef.current) {
+        mutateFunction({
+          variables: {
+            title: JSON.stringify({
+              position,
+              clickedFigure,
+              castExchange: castExchange.current
+            })
+          }
+        })
+      }
+
+      setClickedFigure(undefined)
+      setIsWhiteTurn(prev => !prev)
+    },
+    [
+      blackFigures,
+      board,
+      clickedFigure,
+      isMultiplayer,
+      isWhiteTurn,
+      mutateFunction,
+      whiteFigures
+    ]
+  )
 
   const restoreChess = () => {
     setBoard(initialBoard)
@@ -1078,10 +1151,13 @@ const Home = () => {
     setIsWhiteTurn(true)
     setClickedFigure(undefined)
     setHasPawnReachedEnd(false)
+    setIsMultiplayer(false)
+    setIsFirstPlayer(false)
     castExchange.current = undefined
     temporaryWhitePawnPosition.current = undefined
     temporaryBlackPawnPosition.current = undefined
-    previousStates.current = []
+    previousStatesRef.current = []
+    isCurrentPlayerRef.current = false
   }
 
   const handleNotificationClick = () => {
@@ -1094,12 +1170,13 @@ const Home = () => {
   }
 
   const handleBackClick = () => {
-    if (previousStates.current.length === 2) {
+    if (previousStatesRef.current.length === 2) {
       restoreChess()
       return
     }
-    previousStates.current.splice(previousStates.current.length - 2, 2)
-    const state = previousStates.current[previousStates.current.length - 1]
+    previousStatesRef.current.splice(previousStatesRef.current.length - 2, 2)
+    const state =
+      previousStatesRef.current[previousStatesRef.current.length - 1]
     setBoard(state.board)
     setWhiteFigures(state.whiteFigures)
     setBlackFigures(state.blackFigures)
@@ -1109,10 +1186,10 @@ const Home = () => {
 
   useEffect(() => {
     const isWhitePlayerAlive = Object.values(whiteFigures).find(
-      ({ role }) => role === 'king'
+      ({ figure }) => figure === FIGURES.KING
     )?.isAlive
     const isBlackPlayerAlive = Object.values(blackFigures).find(
-      ({ role }) => role === 'king'
+      ({ figure }) => figure === FIGURES.KING
     )?.isAlive
     if (!isWhitePlayerAlive || !isBlackPlayerAlive) {
       setIsGameOver(true)
@@ -1128,10 +1205,50 @@ const Home = () => {
         temporaryWhitePawnPosition: temporaryWhitePawnPosition.current,
         temporaryBlackPawnPosition: temporaryBlackPawnPosition.current
       }
-      previousStates.current.push(state)
+      previousStatesRef.current.push(state)
       setIsMoving(false)
     }
   }, [board, whiteFigures, blackFigures, isMoving])
+
+  useEffect(() => {
+    if (isMultiplayer && subscriptionData && !isCurrentPlayerRef.current) {
+      const parsedClickedFigure = JSON.parse(
+        subscriptionData.titleChanged.title
+      ).clickedFigure
+      const parsedCastExchange = JSON.parse(
+        subscriptionData.titleChanged.title
+      ).castExchange
+      castExchange.current = parsedCastExchange
+
+      if (parsedClickedFigure) {
+        console.log('setting')
+        setClickedFigure(parsedClickedFigure)
+      }
+      setIsSubscriptionDataReady(true)
+    }
+    isCurrentPlayerRef.current = false
+  }, [isMultiplayer, subscriptionData])
+
+  useEffect(() => {
+    if (isMultiplayer && isSubscriptionDataReady) {
+      const parsedPosition = JSON.parse(
+        subscriptionData.titleChanged.title
+      ).position
+      handleMoveFigure(parsedPosition)
+      setIsSubscriptionDataReady(false)
+    }
+  }, [
+    isMultiplayer,
+    isSubscriptionDataReady,
+    subscriptionData,
+    handleMoveFigure
+  ])
+
+  useEffect(() => {
+    if (isMultiplayer && sessionStorage.getItem('player')) {
+      setIsFirstPlayer(true)
+    }
+  }, [isMultiplayer])
 
   return (
     <div className="h-screen grid grid-rows-[40px]">
@@ -1144,7 +1261,9 @@ const Home = () => {
             <p className="mx-2 text-center text-xl">
               {isGameOver
                 ? `Player ${isWhiteTurn ? '2' : '1'} won`
-                : 'You will convert a pawn into a queen'}
+                : `Player ${
+                    isWhiteTurn ? '2' : '1'
+                  } converted a pawn into a queen`}
             </p>
             <button
               onClick={handleNotificationClick}
@@ -1156,25 +1275,44 @@ const Home = () => {
         </div>
       )}
       <div className="w-full bg-white py-2 grid grid-cols-3">
+        {isMultiplayer ? (
+          <span className="bg-green-400 h-[15px] w-[15px] my-auto rounded-full ml-3" />
+        ) : (
+          <button
+            disabled={previousStatesRef.current.length < 2}
+            onClick={handleBackClick}
+            className={classNames('max-w-fit ml-3', {
+              'text-[#969696]': previousStatesRef.current.length < 2,
+              'hover:underline': previousStatesRef.current.length >= 2
+            })}
+          >
+            Back
+          </button>
+        )}
         <button
-          disabled={previousStates.current.length < 2}
-          onClick={handleBackClick}
-          className={classNames('w-auto max-w-fit col-end-1 translate-x-3', {
-            'text-[#969696]': previousStates.current.length < 2,
-            'hover:underline': previousStates.current.length >= 2
-          })}
-        >
-          Back
-        </button>
-        <button
-          className="max-w-fit mx-auto col-start-2 hover:underline"
+          className="max-w-fit col-start-2 mx-auto hover:underline"
           onClick={restoreChess}
         >
           Reset
         </button>
+        <button
+          className="max-w-fit col-start-3 justify-self-end mr-3 hover:underline"
+          onClick={() => setIsMultiplayer(true)}
+        >
+          Multiplayer
+        </button>
       </div>
       <div className="w-full flex items-center bg-[#f5f5f5]">
-        <div className="relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8">
+        <div
+          className={classNames(
+            'relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8',
+            {
+              'pointer-events-none':
+                (isMultiplayer && isWhiteTurn && !isFirstPlayer) ||
+                (!isWhiteTurn && isFirstPlayer)
+            }
+          )}
+        >
           <Figures
             figures={blackFigures}
             isWhiteTurn={isWhiteTurn}

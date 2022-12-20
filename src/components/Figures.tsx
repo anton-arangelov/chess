@@ -57,7 +57,7 @@ export const Figures = ({
                   }
                 )}
               >
-                <img alt={image.props.alt} src={image.props.src} />
+                {image}
               </button>
             )
           }

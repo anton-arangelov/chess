@@ -11,7 +11,7 @@ type BoardProps = {
         role: string
       }
     | undefined
-  handleMoveFigure: (isReachable: boolean, index: number) => void
+  handleMoveFigure: (index: number) => void
 }
 
 export const Board = ({
@@ -21,21 +21,22 @@ export const Board = ({
 }: BoardProps) => {
   return (
     <>
-      {Object.values(board).map((el, index: number) => {
+      {Object.values(board).map(({ isReachable }, index: number) => {
         const row = Math.floor(index / 8) + 1
         return (
           <div
             key={index}
-            onClickCapture={() => handleMoveFigure(el.isReachable, index + 1)}
+            onClickCapture={() => handleMoveFigure(index + 1)}
             className={classNames('relative', {
               'bg-[#d4d4d4]':
                 (index % 2 === 0 && row % 2 === 0) ||
                 (index % 2 === 1 && row % 2 === 1),
-              'cursor-pointer': clickedFigure && el.isReachable
+              'cursor-pointer': clickedFigure && isReachable,
+              'pointer-events-none': !isReachable
             })}
           >
             {index + 1}
-            {clickedFigure && el.isReachable && (
+            {clickedFigure && isReachable && (
               <div className="h-[10px] w-[10px] z-20 rounded-full bg-[#14b8a6] m-auto absolute top-[25px] left-[14px] sm:left-[25px]" />
             )}
           </div>
