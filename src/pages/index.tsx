@@ -1117,7 +1117,7 @@ const Home = () => {
           })
         }
       }
-      console.log('here')
+
       if (isMultiplayer && isCurrentPlayerRef.current) {
         mutateFunction({
           variables: {

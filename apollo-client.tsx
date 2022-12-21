@@ -6,14 +6,13 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient, WebSocket } from 'graphql-ws'
 
 const httpLink = new HttpLink({
-  uri: 'https://famous-klepon-d7c87d.netlify.app/graphql'
-  // uri: 'https://api.apps.us.bluescape.com/v3/graphql'
+  uri: 'https://chess-server-fbxp.onrender.com/graphql'
 })
 
 const wsLink = () =>
   new GraphQLWsLink(
     createClient({
-      url: 'ws://localhost:3000/graphql'
+      url: 'wss://chess-server-fbxp.onrender.com/graphql'
     })
   )
 
