@@ -988,9 +988,6 @@ const Home = () => {
         newBoard[keyIndex].isReachable = false
       })
       setBoard(newBoard)
-      let whites, blacks
-      const parsedWhiteFigures = JSON.parse(JSON.stringify(whiteFigures))
-      const parsedBlackFigures = JSON.parse(JSON.stringify(blackFigures))
 
       //Setting the figures
       if (isWhiteTurn && !hasPawnReachedEndHelper) {
@@ -1340,7 +1337,8 @@ const Home = () => {
           Multiplayer
         </button>
       </div>
-      <div className="w-full flex items-center bg-[#f5f5f5]">
+      <div className="w-full flex flex-col items-center bg-[#f5f5f5]">
+        <div className="mt-5">{`Player ${isWhiteTurn ? 1 : 2} turn`}</div>
         <div
           className={classNames(
             'relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8',
@@ -1359,6 +1357,15 @@ const Home = () => {
           <Board
             board={board}
             clickedFigure={clickedFigure}
+            {...(subscriptionData && {
+              movedPosition: JSON.parse(subscriptionData.titleChanged.title)
+                .position
+            })}
+            {...(isMultiplayer && {
+              shouldAnimate:
+                (isFirstPlayer && isWhiteTurn) ||
+                (!isFirstPlayer && !isWhiteTurn)
+            })}
             handleMoveFigure={handleMoveFigure}
           />
           <Figures

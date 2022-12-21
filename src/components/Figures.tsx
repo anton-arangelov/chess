@@ -48,9 +48,8 @@ export const Figures = ({
                 }}
                 className={classNames(
                   'border border-transparent border-[4px] rounded absolute max-w-[37.5px] sm:max-w-none',
-                  'flex items-center justify-center focus:border focus:border-[#14b8a6] focus:border-[4px]',
+                  'flex items-center justify-center focus:border focus:border-[#14b8a6] focus:border-[4px] z-20',
                   {
-                    'z-10': !areWhiteFigures,
                     'pointer-events-none':
                       (isWhiteTurn && !areWhiteFigures) ||
                       (!isWhiteTurn && areWhiteFigures)
