@@ -3,16 +3,16 @@
 import { split, HttpLink, ApolloClient, InMemoryCache } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
-import { createClient, WebSocket } from 'graphql-ws'
+import { createClient } from 'graphql-ws'
 
 const httpLink = new HttpLink({
-  uri: 'https://chess-server-fbxp.onrender.com/graphql'
+  uri: process.env.NEXT_PUBLIC_SERVER_HTTP_URI
 })
 
 const wsLink = () =>
   new GraphQLWsLink(
     createClient({
-      url: 'wss://chess-server-fbxp.onrender.com/graphql'
+      url: process.env.NEXT_PUBLIC_SERVER_HTTP_WS ?? ''
     })
   )
 
