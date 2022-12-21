@@ -519,13 +519,16 @@ const Home = () => {
     | undefined
   >(undefined)
   const [isMoving, setIsMoving] = useState(false)
-  const [isFirstPlayer, setIsFirstPlayer] = useState(false)
+  const [isFirstPlayer, setIsFirstPlayer] = useState<boolean | undefined>(
+    undefined
+  )
   const [isMultiplayer, setIsMultiplayer] = useState(false)
   const [isSubscriptionDataReady, setIsSubscriptionDataReady] = useState(false)
   const temporaryWhitePawnPosition = useRef<number | undefined>(undefined)
   const temporaryBlackPawnPosition = useRef<number | undefined>(undefined)
   const previousStatesRef = useRef<PreviousStates[]>([])
   const isCurrentPlayerRef = useRef(false)
+  const playerNumber = useRef<number | undefined>(undefined)
 
   const [
     mutateFunction
@@ -1152,12 +1155,16 @@ const Home = () => {
     setClickedFigure(undefined)
     setHasPawnReachedEnd(false)
     setIsMultiplayer(false)
-    setIsFirstPlayer(false)
+    setIsFirstPlayer(undefined)
     castExchange.current = undefined
     temporaryWhitePawnPosition.current = undefined
     temporaryBlackPawnPosition.current = undefined
     previousStatesRef.current = []
     isCurrentPlayerRef.current = false
+    playerNumber.current = undefined
+    if (isFirstPlayer) {
+      mutateFunction({ variables: { title: JSON.stringify({}) } })
+    }
   }
 
   const handleNotificationClick = () => {
@@ -1215,13 +1222,15 @@ const Home = () => {
       const parsedClickedFigure = JSON.parse(
         subscriptionData.titleChanged.title
       ).clickedFigure
+      if (!parsedClickedFigure) {
+        return
+      }
       const parsedCastExchange = JSON.parse(
         subscriptionData.titleChanged.title
       ).castExchange
       castExchange.current = parsedCastExchange
 
       if (parsedClickedFigure) {
-        console.log('setting')
         setClickedFigure(parsedClickedFigure)
       }
       setIsSubscriptionDataReady(true)
@@ -1245,10 +1254,36 @@ const Home = () => {
   ])
 
   useEffect(() => {
-    if (isMultiplayer && sessionStorage.getItem('player')) {
-      setIsFirstPlayer(true)
+    if (isMultiplayer) {
+      playerNumber.current = Math.random()
+      mutateFunction({
+        variables: {
+          title: JSON.stringify({ playerNumber: playerNumber.current })
+        }
+      })
     }
-  }, [isMultiplayer])
+  }, [isMultiplayer, mutateFunction])
+
+  useEffect(() => {
+    if (
+      isFirstPlayer === undefined &&
+      isMultiplayer &&
+      subscriptionData &&
+      playerNumber.current
+    ) {
+      const parsedPlayerNumber = JSON.parse(
+        subscriptionData.titleChanged.title
+      ).playerNumber
+      if (!parsedPlayerNumber) {
+        return
+      }
+      if (playerNumber.current === parsedPlayerNumber) {
+        setIsFirstPlayer(true)
+        return
+      }
+      setIsFirstPlayer(false)
+    }
+  }, [isFirstPlayer, isMultiplayer, subscriptionData])
 
   return (
     <div className="h-screen grid grid-rows-[40px]">
@@ -1276,7 +1311,10 @@ const Home = () => {
       )}
       <div className="w-full bg-white py-2 grid grid-cols-3">
         {isMultiplayer ? (
-          <span className="bg-green-400 h-[15px] w-[15px] my-auto rounded-full ml-3" />
+          <div className="flex my-auto ml-3">
+            <span className="bg-green-400 h-[15px] w-[15px] my-auto rounded-full mr-2" />
+            {isFirstPlayer !== undefined && `Player ${isFirstPlayer ? 1 : 2}`}
+          </div>
         ) : (
           <button
             disabled={previousStatesRef.current.length < 2}
