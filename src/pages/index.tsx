@@ -1289,11 +1289,7 @@ const Home = () => {
   return (
     <div className="h-screen grid grid-rows-[40px]">
       {isMultiplayer && (
-        <audio
-          className="hidden"
-          ref={audioRef}
-          src="/mixkit-short-wind-swoosh-1461.ogg"
-        />
+        <audio className="hidden" ref={audioRef} src="/movement.mp3" />
       )}
       {(hasPawnReachedEnd || isGameOver) && (
         <div className="w-full h-full absolute z-30">
