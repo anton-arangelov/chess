@@ -9,6 +9,8 @@ import {
   handleRookPossibleMovements
 } from '../config/helpers'
 import { gql, useMutation, useSubscription } from '@apollo/client'
+import mute from '../assets/mute.svg'
+import unmute from '../assets/unmute.svg'
 
 const first = new Map([
   [
@@ -504,6 +506,19 @@ const Home = () => {
   const [isWhiteTurn, setIsWhiteTurn] = useState(true)
   const [hasPawnReachedEnd, setHasPawnReachedEnd] = useState(false)
   const [isGameOver, setIsGameOver] = useState(false)
+  const [isMoving, setIsMoving] = useState(false)
+  const [isFirstPlayer, setIsFirstPlayer] = useState<boolean | undefined>(
+    undefined
+  )
+  const [isMultiplayer, setIsMultiplayer] = useState(false)
+  const [isSubscriptionDataReady, setIsSubscriptionDataReady] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
+  const temporaryWhitePawnPosition = useRef<number | undefined>(undefined)
+  const temporaryBlackPawnPosition = useRef<number | undefined>(undefined)
+  const previousStatesRef = useRef<PreviousStates[]>([])
+  const isCurrentPlayerRef = useRef(false)
+  const playerNumber = useRef<number | undefined>(undefined)
+  const audioRef = useRef<HTMLAudioElement>(null)
   const castExchange = useRef<
     | {
         isTopLeftRook?: boolean
@@ -513,18 +528,6 @@ const Home = () => {
       }
     | undefined
   >(undefined)
-  const [isMoving, setIsMoving] = useState(false)
-  const [isFirstPlayer, setIsFirstPlayer] = useState<boolean | undefined>(
-    undefined
-  )
-  const [isMultiplayer, setIsMultiplayer] = useState(false)
-  const [isSubscriptionDataReady, setIsSubscriptionDataReady] = useState(false)
-  const temporaryWhitePawnPosition = useRef<number | undefined>(undefined)
-  const temporaryBlackPawnPosition = useRef<number | undefined>(undefined)
-  const previousStatesRef = useRef<PreviousStates[]>([])
-  const isCurrentPlayerRef = useRef(false)
-  const playerNumber = useRef<number | undefined>(undefined)
-  const audioRef = useRef<HTMLAudioElement>(null)
 
   const [
     mutateFunction
@@ -908,7 +911,7 @@ const Home = () => {
       if (!clickedFigure) {
         return
       }
-      if (isMultiplayer && !isCurrentPlayerRef.current) {
+      if (isMultiplayer && !isMuted && !isCurrentPlayerRef.current) {
         audioRef?.current?.play()
       }
 
@@ -1140,7 +1143,8 @@ const Home = () => {
       isMultiplayer,
       isWhiteTurn,
       mutateFunction,
-      whiteFigures
+      whiteFigures,
+      isMuted
     ]
   )
 
@@ -1284,11 +1288,13 @@ const Home = () => {
 
   return (
     <div className="h-screen grid grid-rows-[40px]">
-      <audio
-        className="hidden"
-        ref={audioRef}
-        src="/mixkit-short-wind-swoosh-1461.ogg"
-      />
+      {isMultiplayer && (
+        <audio
+          className="hidden"
+          ref={audioRef}
+          src="/mixkit-short-wind-swoosh-1461.ogg"
+        />
+      )}
       {(hasPawnReachedEnd || isGameOver) && (
         <div className="w-full h-full absolute z-30">
           <div
@@ -1349,7 +1355,21 @@ const Home = () => {
         </button>
       </div>
       <div className="w-full flex flex-col items-center bg-[#f5f5f5]">
-        <div className="mt-5">{`Player ${isWhiteTurn ? 1 : 2} turn`}</div>
+        <div className="mt-5 w-full flex justify-center relative">
+          {`Player ${isWhiteTurn ? 1 : 2} turn`}
+          {isMultiplayer && (
+            <button
+              onClick={() => setIsMuted(prev => !prev)}
+              className="w-[24px] h-[24px] right-5 absolute"
+            >
+              {isMuted ? (
+                <img src={unmute.src} alt="" />
+              ) : (
+                <img src={mute.src} alt="" />
+              )}
+            </button>
+          )}
+        </div>
         <div
           className={classNames(
             'relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8',
