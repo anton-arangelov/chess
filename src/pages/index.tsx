@@ -1372,7 +1372,7 @@ const Home = () => {
         </div>
         <div
           className={classNames(
-            'relative m-auto w-[300px] sm:w-[480px] h-[480px] bg-white grid grid-cols-8 grid-rows-8',
+            'relative m-auto w-[300px] sm:w-[480px] md:w-[580px] h-[480px] md:h-[580px] bg-white grid grid-cols-8 grid-rows-8',
             {
               'pointer-events-none':
                 (isMultiplayer && isWhiteTurn && !isFirstPlayer) ||
