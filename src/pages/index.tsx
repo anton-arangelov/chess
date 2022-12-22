@@ -2,18 +2,13 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import classNames from 'classnames'
 import { Board } from '../components/Board'
 import { Figures } from '../components/Figures'
-import ClientOnly from '../components/ClientOnly'
-import Titles from '../components/Titles'
 import { FIGURES, OCCUPIED_BY } from '../config/constants'
 import { PreviousStates } from '../config/types'
 import {
   handleOfficerPossibleMovements,
   handleRookPossibleMovements
 } from '../config/helpers'
-import { useQuery, gql, useMutation, useSubscription } from '@apollo/client'
-type Figure = {
-  id: string
-}
+import { gql, useMutation, useSubscription } from '@apollo/client'
 
 const first = new Map([
   [
@@ -529,6 +524,7 @@ const Home = () => {
   const previousStatesRef = useRef<PreviousStates[]>([])
   const isCurrentPlayerRef = useRef(false)
   const playerNumber = useRef<number | undefined>(undefined)
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   const [
     mutateFunction
@@ -912,6 +908,10 @@ const Home = () => {
       if (!clickedFigure) {
         return
       }
+      if (isMultiplayer && !isCurrentPlayerRef.current) {
+        audioRef?.current?.play()
+      }
+
       setIsMoving(true)
       let wasAttacked = false
       const newX = position % 8
@@ -1284,6 +1284,11 @@ const Home = () => {
 
   return (
     <div className="h-screen grid grid-rows-[40px]">
+      <audio
+        className="hidden"
+        ref={audioRef}
+        src="/mixkit-short-wind-swoosh-1461.ogg"
+      />
       {(hasPawnReachedEnd || isGameOver) && (
         <div className="w-full h-full absolute z-30">
           <div
@@ -1331,7 +1336,13 @@ const Home = () => {
           Reset
         </button>
         <button
-          className="max-w-fit col-start-3 justify-self-end mr-3 hover:underline"
+          className={classNames(
+            'max-w-fit col-start-3 justify-self-end mr-3 hover:underline',
+            {
+              'pointer-events-none text-[#969696]':
+                previousStatesRef.current.length
+            }
+          )}
           onClick={() => setIsMultiplayer(true)}
         >
           Multiplayer
