@@ -1030,11 +1030,11 @@ const Home = () => {
 
       if (isWhiteTurn && wasAttacked) {
         let attackedFigure = Object.values(blackFigures).find(
-          ({ positionX, positionY, isAlive }) => {
+          ({ isAlive, positionX, positionY }) => {
             return (
+              isAlive &&
               positionX === (newX !== 0 ? newX : 8) &&
-              positionY === newY &&
-              isAlive
+              positionY === newY
             )
           }
         )
@@ -1098,11 +1098,11 @@ const Home = () => {
 
       if (!isWhiteTurn && wasAttacked) {
         let attackedFigure = Object.values(whiteFigures).find(
-          ({ positionX, positionY, isAlive }) => {
+          ({ isAlive, positionX, positionY }) => {
             return (
+              isAlive &&
               positionX === (newX !== 0 ? newX : 8) &&
-              positionY === newY &&
-              isAlive
+              positionY === newY
             )
           }
         )
