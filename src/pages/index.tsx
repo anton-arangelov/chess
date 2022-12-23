@@ -1030,8 +1030,12 @@ const Home = () => {
 
       if (isWhiteTurn && wasAttacked) {
         let attackedFigure = Object.values(blackFigures).find(
-          ({ positionX, positionY }) => {
-            return positionX === (newX !== 0 ? newX : 8) && positionY === newY
+          ({ positionX, positionY, isAlive }) => {
+            return (
+              positionX === (newX !== 0 ? newX : 8) &&
+              positionY === newY &&
+              isAlive
+            )
           }
         )
         //if the attacked figure was a pawn on diagonal
@@ -1094,8 +1098,12 @@ const Home = () => {
 
       if (!isWhiteTurn && wasAttacked) {
         let attackedFigure = Object.values(whiteFigures).find(
-          ({ positionX, positionY }) => {
-            return positionX === (newX !== 0 ? newX : 8) && positionY === newY
+          ({ positionX, positionY, isAlive }) => {
+            return (
+              positionX === (newX !== 0 ? newX : 8) &&
+              positionY === newY &&
+              isAlive
+            )
           }
         )
         //if the attacked figure was a pawn on diagonal
