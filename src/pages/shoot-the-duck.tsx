@@ -25,6 +25,7 @@ const ShootTheDuck = () => {
   const [missedDucksCount, setMissedDucksCount] = useState(0)
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
+  const [width, setWidth] = useState<number>()
 
   const numberOfItems = useMemo(
     () =>
@@ -114,6 +115,10 @@ const ShootTheDuck = () => {
     }
   }, [missedDucksCount, timer, resetGame])
 
+  useEffect(() => {
+    setWidth(window.innerWidth)
+  }, [])
+
   return (
     <div className="flex flex-col justify-center items-center">
       {/* {buttons.map(({ description, name }, index) => (
@@ -171,11 +176,16 @@ const ShootTheDuck = () => {
                 'animate-slide-four': animationNumber === 4
               }
             )}
-            onPointerDown={handleDuckClicked}
+            {...(width && width > 639 && { onPointerDown: handleDuckClicked })}
           >
-            <span className="w-1 h-10" />
+            {width && width <= 639 && (
+              <span
+                className="w-6 h-6 absolute left-2 top-2 cursor-crosshair"
+                onPointerDown={handleDuckClicked}
+              />
+            )}
             <img
-              className="m-auto transform -translate-x-1 h-10 w-10 pointer-events-none"
+              className="m-auto transform -translate-x-0 h-10 w-10 pointer-events-none"
               alt=""
               src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d0bea147-2598-474c-8176-651a8c00b41b/df87clj-674162df-9af1-48fe-a8b1-58383ea45e57.png/v1/fill/w_1280,h_1280,strp/kawaii_duck_png_by_milosii_df87clj-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcL2QwYmVhMTQ3LTI1OTgtNDc0Yy04MTc2LTY1MWE4YzAwYjQxYlwvZGY4N2Nsai02NzQxNjJkZi05YWYxLTQ4ZmUtYThiMS01ODM4M2VhNDVlNTcucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.whRL47laJU_MFPCt52Q5rrhaMOJfTGYXMkdDK1VS_8s"
             />
