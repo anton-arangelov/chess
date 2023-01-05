@@ -154,10 +154,16 @@ const ShootTheDuck = () => {
         />
       )}
       <div className="h-[400px] w-[360px] sm:w-[400px] border-[1px] border-black mt-[50px] cursor-crosshair relative overflow-hidden">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-ilm0LNsgmhEB-aDJQw9Ak0pQqAGYElnd4A&usqp=CAU"
+          alt=""
+          className="w-full h-full pointer-events-none -z-10"
+        />
+        <span className="absolute w-full h-full top-0"></span>
         {isGameStarted && isDuckAlive && (
           <button
             className={classNames(
-              'absolute justify-center -left-10 h-20 w-20 top-10 transition duration-300 cursor-crosshair flex',
+              'absolute justify-center -left-10 top-10 transition duration-300 cursor-crosshair flex',
               {
                 'animate-slide-one': animationNumber === 1,
                 'animate-slide-two': animationNumber === 2,
@@ -165,9 +171,9 @@ const ShootTheDuck = () => {
                 'animate-slide-four': animationNumber === 4
               }
             )}
-            onClick={handleDuckClicked}
+            onMouseDown={handleDuckClicked}
           >
-            <span className="m-auto w-1 h-6"></span>
+            <span className="m-auto w-1 h-6" />
             <img
               className="m-auto transform -translate-x-2 h-12 w-12 pointer-events-none"
               alt=""

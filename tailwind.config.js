@@ -19,7 +19,7 @@ module.exports = {
         },
         'slide-in-out-one': {
           '50%': {
-            transform: 'translate(240px, 200%)'
+            transform: 'translate(240px, 400%)'
           },
           '100%': {
             transform: 'translateX(480px)'
@@ -38,7 +38,7 @@ module.exports = {
         },
         'slide-in-out-three': {
           '50%': {
-            transform: 'translate(200%, 240px)'
+            transform: 'translate(300%, 240px)'
           },
           '100%': {
             transform: 'translateX(480px)'
