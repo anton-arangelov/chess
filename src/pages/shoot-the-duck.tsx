@@ -26,6 +26,9 @@ const ShootTheDuck = () => {
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
   const [width, setWidth] = useState<number>()
+  const [clickCoordinates, setClickCoordinates] =
+    useState<{ x: number; y: number }>()
+  const [isClicked, setIsClicked] = useState(false)
 
   const numberOfItems = useMemo(
     () =>
@@ -66,11 +69,30 @@ const ShootTheDuck = () => {
     [items]
   )
 
+  const handlePointerDown = useCallback((e: MouseEvent) => {
+    if (
+      (e.target as HTMLElement)?.id !== 'gameBoard' &&
+      (e.target as HTMLElement)?.id !== 'duckButton' &&
+      (e.target as HTMLElement)?.id !== 'duckSpan'
+    ) {
+      return
+    }
+    setIsClicked(true)
+    setClickCoordinates({
+      x: Math.floor(e.clientX),
+      y: Math.floor(e.clientY)
+    })
+    setTimeout(() => {
+      setIsClicked(false)
+    }, 300)
+  }, [])
+
   const handleDuckClicked = (e: BaseSyntheticEvent) => {
     e.stopPropagation()
     timer.stop()
     setScore(prev => prev + 1)
     setIsDuckAlive(false)
+    handlePointerDown(e as unknown as MouseEvent)
   }
 
   const resetGame = useCallback(() => {
@@ -119,6 +141,13 @@ const ShootTheDuck = () => {
     setWidth(window.innerWidth)
   }, [])
 
+  useEffect(() => {
+    document.addEventListener('pointerdown', handlePointerDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+    }
+  }, [handlePointerDown])
+
   return (
     <div className="flex flex-col justify-center items-center">
       {/* {buttons.map(({ description, name }, index) => (
@@ -151,6 +180,15 @@ const ShootTheDuck = () => {
       <div>
         Total items are {items.reduce((acc, { quantity }) => acc + quantity, 0)}
       </div> */}
+      {isClicked && !isNotificationVisible && isGameStarted && (
+        <span
+          className="h-1 w-1 bg-teal-700 fixed rounded z-10 cursor-crosshair"
+          style={{
+            top: clickCoordinates?.y,
+            left: clickCoordinates?.x
+          }}
+        ></span>
+      )}
       {isNotificationVisible && (
         <Notification
           notificationText="Game is over"
@@ -158,15 +196,18 @@ const ShootTheDuck = () => {
           handleNotificationClick={resetGame}
         />
       )}
-      <div className="h-[400px] w-[360px] sm:w-[400px] border-[1px] border-black mt-[50px] cursor-crosshair relative overflow-hidden">
+      <div
+        id="gameBoard"
+        className="h-[400px] w-[360px] sm:w-[400px] border-[1px] border-black mt-[50px] cursor-crosshair relative overflow-hidden"
+      >
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-ilm0LNsgmhEB-aDJQw9Ak0pQqAGYElnd4A&usqp=CAU"
           alt=""
-          className="w-full h-full"
+          className="w-full h-full select-none pointer-events-none"
         />
-        <span className="absolute w-full h-full top-0"></span>
         {isGameStarted && isDuckAlive && (
           <button
+            id="duckButton"
             className={classNames(
               'absolute justify-center -left-10 top-10 transition duration-300 cursor-crosshair flex',
               {
@@ -180,12 +221,13 @@ const ShootTheDuck = () => {
           >
             {width && width <= 639 && (
               <span
+                id="duckSpan"
                 className="w-6 h-6 absolute left-2 top-2 cursor-crosshair"
                 onPointerDown={handleDuckClicked}
               />
             )}
             <img
-              className="m-auto transform -translate-x-0 h-10 w-10 pointer-events-none"
+              className="m-auto transform -translate-x-0 h-10 w-10 pointer-events-none select-none"
               alt=""
               src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d0bea147-2598-474c-8176-651a8c00b41b/df87clj-674162df-9af1-48fe-a8b1-58383ea45e57.png/v1/fill/w_1280,h_1280,strp/kawaii_duck_png_by_milosii_df87clj-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcL2QwYmVhMTQ3LTI1OTgtNDc0Yy04MTc2LTY1MWE4YzAwYjQxYlwvZGY4N2Nsai02NzQxNjJkZi05YWYxLTQ4ZmUtYThiMS01ODM4M2VhNDVlNTcucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.whRL47laJU_MFPCt52Q5rrhaMOJfTGYXMkdDK1VS_8s"
             />
