@@ -1,18 +1,14 @@
-import {
-  BaseSyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { Notification } from '../components/Notification'
+import { CustomBaseSyntheticEvent } from '../config/types'
 
 const buttons = [
   { description: 'Add a pizza', name: 'Pizza' },
   { description: 'Add a cola', name: 'Cola' }
 ]
+
+let timeout: ReturnType<typeof setTimeout>
 
 const ShootTheDuck = () => {
   const [items, setItems] = useState<{ name: string; quantity: number }[]>([])
@@ -69,30 +65,29 @@ const ShootTheDuck = () => {
     [items]
   )
 
-  const handlePointerDown = useCallback((e: MouseEvent) => {
-    if (
-      (e.target as HTMLElement)?.id !== 'gameBoard' &&
-      (e.target as HTMLElement)?.id !== 'duckButton' &&
-      (e.target as HTMLElement)?.id !== 'duckSpan'
-    ) {
-      return
-    }
-    setIsClicked(true)
-    setClickCoordinates({
-      x: Math.floor(e.clientX),
-      y: Math.floor(e.clientY)
-    })
-    setTimeout(() => {
-      setIsClicked(false)
-    }, 300)
-  }, [])
+  const handlePointerDown = useCallback(
+    (e: CustomBaseSyntheticEvent) => {
+      if (!isGameStarted) {
+        return
+      }
+      clearTimeout(timeout)
+      setIsClicked(true)
+      setClickCoordinates({
+        x: Math.floor(e.clientX) - 1,
+        y: Math.floor(e.clientY) - 1
+      })
+      timeout = setTimeout(() => {
+        setIsClicked(false)
+      }, 300)
+    },
+    [isGameStarted]
+  )
 
-  const handleDuckClicked = (e: BaseSyntheticEvent) => {
+  const handleDuckClicked = (e: CustomBaseSyntheticEvent) => {
     e.stopPropagation()
     timer.stop()
     setScore(prev => prev + 1)
     setIsDuckAlive(false)
-    handlePointerDown(e as unknown as MouseEvent)
   }
 
   const resetGame = useCallback(() => {
@@ -141,15 +136,8 @@ const ShootTheDuck = () => {
     setWidth(window.innerWidth)
   }, [])
 
-  useEffect(() => {
-    document.addEventListener('pointerdown', handlePointerDown)
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
-    }
-  }, [handlePointerDown])
-
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex relative flex-col justify-center items-center">
       {/* {buttons.map(({ description, name }, index) => (
         <button
           key={index}
@@ -197,6 +185,7 @@ const ShootTheDuck = () => {
         />
       )}
       <div
+        onPointerDown={handlePointerDown}
         id="gameBoard"
         className="h-[400px] w-[360px] sm:w-[400px] border-[1px] border-black mt-[50px] cursor-crosshair relative overflow-hidden"
       >
@@ -235,7 +224,9 @@ const ShootTheDuck = () => {
         )}
       </div>
       <span> Score is {score}</span>
+      <span> Missed ducks are {missedDucksCount}</span>
       <button
+        className="bg-green-300 rounded-md px-10 py-1 hover:bg-green-400 active:bg-green-500 mt-2"
         onClick={() => {
           if (!isGameStarted) {
             setIsGameStarted(true)
@@ -246,7 +237,6 @@ const ShootTheDuck = () => {
       >
         {isGameStarted ? 'Stop' : 'Start'}
       </button>
-      <span> Missed ducks are {missedDucksCount}</span>
     </div>
   )
 }

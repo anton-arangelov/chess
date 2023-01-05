@@ -19,7 +19,7 @@ export const Notification = ({
           'w-[300px] h-[300px] mx-auto flex flex-col justify-center items-center border border-2',
           {
             'mt-[200px]': !isDuckNotification,
-            'mt-[240px]': isDuckNotification
+            'mt-[90px]': isDuckNotification
           }
         )}
       >
