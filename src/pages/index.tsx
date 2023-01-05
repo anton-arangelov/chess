@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import classNames from 'classnames'
 import { Board } from '../components/Board'
 import { Figures } from '../components/Figures'
+import { Notification } from '../components/Notification'
 import { FIGURES, OCCUPIED_BY } from '../config/constants'
 import { PreviousStates } from '../config/types'
 import {
@@ -1300,26 +1301,36 @@ const Home = () => {
         <audio className="hidden" ref={audioRef} src="/movement.mp3" />
       )}
       {(hasPawnReachedEnd || isGameOver) && (
-        <div className="w-full h-full absolute z-30">
-          <div
-            style={{ background: 'rgba(239, 239, 240, 0.6)' }}
-            className="w-[300px] h-[300px] mx-auto mt-[200px] flex flex-col justify-center items-center border border-2"
-          >
-            <p className="mx-2 text-center text-xl">
-              {isGameOver
-                ? `Player ${isWhiteTurn ? '2' : '1'} won`
-                : `Player ${
-                    isWhiteTurn ? '2' : '1'
-                  } converted a pawn into a queen`}
-            </p>
-            <button
-              onClick={handleNotificationClick}
-              className="bg-[black] text-white w-[150px] py-1 rounded mt-5"
-            >
-              Ok
-            </button>
-          </div>
-        </div>
+        // <div className="w-full h-full absolute z-30">
+        //   <div
+        //     style={{ background: 'rgba(239, 239, 240, 0.6)' }}
+        //     className="w-[300px] h-[300px] mx-auto mt-[200px] flex flex-col justify-center items-center border border-2"
+        //   >
+        //     <p className="mx-2 text-center text-xl">
+        //       {isGameOver
+        //         ? `Player ${isWhiteTurn ? '2' : '1'} won`
+        //         : `Player ${
+        //             isWhiteTurn ? '2' : '1'
+        //           } converted a pawn into a queen`}
+        //     </p>
+        //     <button
+        //       onClick={handleNotificationClick}
+        //       className="bg-[black] text-white w-[150px] py-1 rounded mt-5"
+        //     >
+        //       Ok
+        //     </button>
+        //   </div>
+        // </div>
+        <Notification
+          notificationText={
+            isGameOver
+              ? `Player ${isWhiteTurn ? '2' : '1'} won`
+              : `Player ${
+                  isWhiteTurn ? '2' : '1'
+                } converted a pawn into a queen`
+          }
+          handleNotificationClick={handleNotificationClick}
+        />
       )}
       <div className="w-full bg-white py-2 grid grid-cols-3">
         {isMultiplayer ? (
