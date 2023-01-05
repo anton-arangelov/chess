@@ -157,7 +157,7 @@ const ShootTheDuck = () => {
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-ilm0LNsgmhEB-aDJQw9Ak0pQqAGYElnd4A&usqp=CAU"
           alt=""
-          className="w-full h-full pointer-events-none -z-10"
+          className="w-full h-full"
         />
         <span className="absolute w-full h-full top-0"></span>
         {isGameStarted && isDuckAlive && (
@@ -171,11 +171,11 @@ const ShootTheDuck = () => {
                 'animate-slide-four': animationNumber === 4
               }
             )}
-            onMouseDown={handleDuckClicked}
+            onPointerDown={handleDuckClicked}
           >
             <span className="m-auto w-1 h-6" />
             <img
-              className="m-auto transform -translate-x-2 h-12 w-12 pointer-events-none"
+              className="m-auto transform -translate-x-1 h-12 w-12 pointer-events-none"
               alt=""
               src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d0bea147-2598-474c-8176-651a8c00b41b/df87clj-674162df-9af1-48fe-a8b1-58383ea45e57.png/v1/fill/w_1280,h_1280,strp/kawaii_duck_png_by_milosii_df87clj-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcL2QwYmVhMTQ3LTI1OTgtNDc0Yy04MTc2LTY1MWE4YzAwYjQxYlwvZGY4N2Nsai02NzQxNjJkZi05YWYxLTQ4ZmUtYThiMS01ODM4M2VhNDVlNTcucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.whRL47laJU_MFPCt52Q5rrhaMOJfTGYXMkdDK1VS_8s"
             />
