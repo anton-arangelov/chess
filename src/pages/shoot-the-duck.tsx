@@ -8,7 +8,7 @@ const buttons = [
   { description: 'Add a cola', name: 'Cola' }
 ]
 
-let timeout: ReturnType<typeof setTimeout>
+let timeout: ReturnType<typeof setTimeout> | null
 
 const ShootTheDuck = () => {
   const [items, setItems] = useState<{ name: string; quantity: number }[]>([])
@@ -70,7 +70,10 @@ const ShootTheDuck = () => {
       if (!isGameStarted) {
         return
       }
-      clearTimeout(timeout)
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
       setIsClicked(true)
       setClickCoordinates({
         x: Math.floor(e.clientX) - 1,
@@ -226,7 +229,12 @@ const ShootTheDuck = () => {
       <span> Score is {score}</span>
       <span> Missed ducks are {missedDucksCount}</span>
       <button
-        className="bg-green-300 rounded-md px-10 py-1 hover:bg-green-400 active:bg-green-500 mt-2"
+        className={classNames(
+          'bg-green-300 rounded-md px-10 py-1 active:bg-green-500 mt-2',
+          {
+            'hover:bg-green-400': width && width > 639
+          }
+        )}
         onClick={() => {
           if (!isGameStarted) {
             setIsGameStarted(true)
