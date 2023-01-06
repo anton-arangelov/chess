@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { GetScoresData } from '../../config/types'
 
-const getScoresHandler = async (
+const updateScoresHandler = async (
   req: NextApiRequest,
   res: NextApiResponse<GetScoresData>
 ): Promise<void> => {
@@ -17,4 +17,4 @@ const getScoresHandler = async (
   }
 }
 
-export default getScoresHandler
+export default updateScoresHandler
