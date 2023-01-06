@@ -44,8 +44,7 @@ export const Notification = ({
         )}
       >
         <p className="mx-2 text-center text-xl">{notificationText}</p>
-        {((rank && !name) ||
-          (!rank && !isFetchingLoading && (score ?? 0) > 0)) && (
+        {((rank && !name) || (!rank && !isFetchingLoading && !!score)) && (
           <span className="text-center mx-4 mt-4">{secondaryText}</span>
         )}
         {rank && !name && (
