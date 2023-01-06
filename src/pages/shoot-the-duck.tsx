@@ -1,7 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import classNames from 'classnames'
+import {
+  BaseSyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { Notification } from '../components/Notification'
-import { CustomBaseSyntheticEvent } from '../config/types'
+import { Duck } from '../components/Duck'
+import { CustomBaseSyntheticEvent, ScoreData } from '../config/types'
+import axios from 'axios'
 
 const buttons = [
   { description: 'Add a pizza', name: 'Pizza' },
@@ -9,6 +17,8 @@ const buttons = [
 ]
 
 let timeout: ReturnType<typeof setTimeout> | null
+let scoreData: ScoreData = []
+let currentRank: number | undefined
 
 const ShootTheDuck = () => {
   const [items, setItems] = useState<{ name: string; quantity: number }[]>([])
@@ -21,10 +31,14 @@ const ShootTheDuck = () => {
   const [missedDucksCount, setMissedDucksCount] = useState(0)
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
-  const [width, setWidth] = useState<number>()
   const [clickCoordinates, setClickCoordinates] =
     useState<{ x: number; y: number }>()
   const [isClicked, setIsClicked] = useState(false)
+  const [rank, setRank] = useState<number | undefined>()
+  const [name, setName] = useState('')
+  const [isResultSubmitted, setIsResultSubmitted] = useState(false)
+
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   const numberOfItems = useMemo(
     () =>
@@ -38,7 +52,7 @@ const ShootTheDuck = () => {
   )
 
   const timer = useMemo(() => {
-    let interval: any
+    let interval: ReturnType<typeof setInterval>
     return {
       start: () => {
         interval = setInterval(() => {
@@ -93,10 +107,15 @@ const ShootTheDuck = () => {
     setIsDuckAlive(false)
   }
 
-  const resetGame = useCallback(() => {
+  const resetGame = () => {
     setIsDuckAlive(false)
     setMissedDucksCount(0)
     setScore(0)
+    setRank(undefined)
+    setName('')
+    setIsResultSubmitted(false)
+    scoreData = []
+    currentRank = undefined
     timer.stop()
     if (!isNotificationVisible) {
       setIsGameStarted(false)
@@ -104,7 +123,12 @@ const ShootTheDuck = () => {
     if (isNotificationVisible) {
       setIsNotificationVisible(false)
     }
-  }, [timer, isNotificationVisible])
+  }
+
+  const handleFormSubmit = (e: BaseSyntheticEvent) => {
+    e.preventDefault()
+    setName(inputRef.current?.value ?? '')
+  }
 
   useEffect(() => {
     if (numberOfItems && numberOfItems % 10 === 0) {
@@ -123,21 +147,63 @@ const ShootTheDuck = () => {
 
   useEffect(() => {
     if (!isDuckAlive && isGameStarted) {
-      setAnimationNumber(Math.floor(Math.random() * 4) + 1)
+      let multiplier = 4
+      if (score > 5) {
+        multiplier = 8
+      }
+      if (score > 10) {
+        multiplier = 10
+      }
+      setAnimationNumber(Math.ceil(Math.random() * multiplier))
       setIsDuckAlive(true)
       timer.start()
     }
-  }, [isDuckAlive, timer, isGameStarted])
+  }, [isDuckAlive, timer, isGameStarted, score])
 
   useEffect(() => {
     if (missedDucksCount === 20) {
+      if (score !== 0) {
+        const getScores = async () => {
+          const result = await axios.post('api/scores', {
+            method: 'get'
+          })
+          scoreData = result.data
+
+          const firstScore = result.data?.[0]?.score
+          const secondScore = result.data?.[1]?.score
+          const thirdScore = result.data?.[2]?.score
+          if (typeof thirdScore === 'number' && score > thirdScore) {
+            currentRank = 3
+          }
+          if (typeof secondScore === 'number' && score > secondScore) {
+            currentRank = 2
+          }
+          if (typeof firstScore === 'number' && score > firstScore) {
+            currentRank = 1
+          }
+          if (currentRank) {
+            setRank(currentRank)
+          }
+        }
+        getScores()
+      }
       setIsNotificationVisible(true)
     }
-  }, [missedDucksCount, timer, resetGame])
+  }, [missedDucksCount, score])
 
   useEffect(() => {
-    setWidth(window.innerWidth)
-  }, [])
+    if (name && scoreData.length) {
+      const updateScore = async () => {
+        if (currentRank) {
+          scoreData?.splice(currentRank - 1, 0, { name, score })
+          scoreData?.pop()
+        }
+        await axios.post('api/scores', { method: 'put', data: scoreData })
+        setIsResultSubmitted(true)
+      }
+      updateScore()
+    }
+  }, [name, score])
 
   return (
     <div className="flex relative flex-col justify-center items-center">
@@ -184,7 +250,13 @@ const ShootTheDuck = () => {
         <Notification
           notificationText="Game is over"
           isDuckNotification
+          name={name}
+          rank={rank}
+          isResultSubmitted={isResultSubmitted}
+          inputRef={inputRef}
+          scoreData={scoreData}
           handleNotificationClick={resetGame}
+          handleFormSubmit={handleFormSubmit}
         />
       )}
       <div
@@ -198,43 +270,16 @@ const ShootTheDuck = () => {
           className="w-full h-full select-none pointer-events-none"
         />
         {isGameStarted && isDuckAlive && (
-          <button
-            id="duckButton"
-            className={classNames(
-              'absolute justify-center -left-10 top-10 transition duration-300 cursor-crosshair flex',
-              {
-                'animate-slide-one': animationNumber === 1,
-                'animate-slide-two': animationNumber === 2,
-                'animate-slide-three': animationNumber === 3,
-                'animate-slide-four': animationNumber === 4
-              }
-            )}
-            {...(width && width > 639 && { onPointerDown: handleDuckClicked })}
-          >
-            {width && width <= 639 && (
-              <span
-                id="duckSpan"
-                className="w-6 h-6 absolute left-2 top-2 cursor-crosshair"
-                onPointerDown={handleDuckClicked}
-              />
-            )}
-            <img
-              className="m-auto transform -translate-x-0 h-10 w-10 pointer-events-none select-none"
-              alt=""
-              src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d0bea147-2598-474c-8176-651a8c00b41b/df87clj-674162df-9af1-48fe-a8b1-58383ea45e57.png/v1/fill/w_1280,h_1280,strp/kawaii_duck_png_by_milosii_df87clj-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcL2QwYmVhMTQ3LTI1OTgtNDc0Yy04MTc2LTY1MWE4YzAwYjQxYlwvZGY4N2Nsai02NzQxNjJkZi05YWYxLTQ4ZmUtYThiMS01ODM4M2VhNDVlNTcucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.whRL47laJU_MFPCt52Q5rrhaMOJfTGYXMkdDK1VS_8s"
-            />
-          </button>
+          <Duck
+            animationNumber={animationNumber}
+            handleDuckClicked={handleDuckClicked}
+          />
         )}
       </div>
       <span> Score is {score}</span>
       <span> Missed ducks are {missedDucksCount}</span>
       <button
-        className={classNames(
-          'bg-green-300 rounded-md px-10 py-1 active:bg-green-500 mt-2',
-          {
-            'hover:bg-green-400': width && width > 639
-          }
-        )}
+        className="bg-green-300 rounded-md px-10 py-1 sm:hover:bg-green-400 active:bg-green-500 sm:active:bg-green-500 mt-2"
         onClick={() => {
           if (!isGameStarted) {
             setIsGameStarted(true)

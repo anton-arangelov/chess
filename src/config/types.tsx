@@ -26,7 +26,17 @@ export type HorsePossibleMovements = {
   isWhiteTurn: boolean
 }
 
+export type ScoreData = { name: string; score: number }[]
+
 export type CustomBaseSyntheticEvent = BaseSyntheticEvent & {
   clientX: number
   clientY: number
+}
+
+type User = { score: number; name: string }
+
+export type GetScoresData = {
+  first?: User
+  second?: User
+  third?: User
 }
