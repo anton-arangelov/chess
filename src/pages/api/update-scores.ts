@@ -2,15 +2,14 @@ import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { GetScoresData } from '../../config/types'
 
-const scoresHandler = async (
+const getScoresHandler = async (
   req: NextApiRequest,
   res: NextApiResponse<GetScoresData>
 ): Promise<void> => {
   try {
-    const method = req.body.method === 'get' ? axios.get : axios.put
-    const result = await method(
+    const result = await axios.put(
       'https://react-project-server-default-rtdb.firebaseio.com/highestScores.json',
-      req.body.data
+      req.body
     )
     res.status(200).json(result.data)
   } catch (e) {
@@ -18,4 +17,4 @@ const scoresHandler = async (
   }
 }
 
-export default scoresHandler
+export default getScoresHandler

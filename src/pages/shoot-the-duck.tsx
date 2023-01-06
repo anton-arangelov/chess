@@ -166,9 +166,7 @@ const ShootTheDuck = () => {
         const getScores = async () => {
           setIsFetchingLoading(true)
           try {
-            const result = await axios.post('api/scores', {
-              method: 'get'
-            })
+            const result = await axios.get('api/get-scores')
             scoreData.current = result.data
 
             const firstScore = result.data?.[0]?.score
@@ -205,10 +203,7 @@ const ShootTheDuck = () => {
           scoreData.current?.pop()
         }
         try {
-          await axios.post('api/scores', {
-            method: 'put',
-            data: scoreData.current
-          })
+          await axios.post('api/update-scores', scoreData.current)
         } catch (e) {
         } finally {
           setIsResultSubmitted(true)
