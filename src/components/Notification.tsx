@@ -4,24 +4,30 @@ import { ScoreData } from '../config/types'
 
 type NotificationProps = {
   notificationText: string
+  secondaryText?: string
   isDuckNotification?: boolean
   name?: string
   rank?: number
+  score?: number
   isResultSubmitted?: boolean
   inputRef?: RefObject<HTMLInputElement>
   scoreData?: ScoreData
+  isFetchingLoading?: boolean
   handleNotificationClick: () => void
   handleFormSubmit?: (e: BaseSyntheticEvent) => void
 }
 
 export const Notification = ({
   notificationText,
+  secondaryText,
   isDuckNotification,
   name,
   rank,
+  score,
   isResultSubmitted,
   inputRef,
   scoreData,
+  isFetchingLoading,
   handleNotificationClick,
   handleFormSubmit
 }: NotificationProps) => {
@@ -38,12 +44,15 @@ export const Notification = ({
         )}
       >
         <p className="mx-2 text-center text-xl">{notificationText}</p>
+        {((rank && !name) ||
+          (!rank && !isFetchingLoading && (score ?? 0) > 0)) && (
+          <span className="text-center mx-4 mt-4">{secondaryText}</span>
+        )}
         {rank && !name && (
           <form
             onSubmit={handleFormSubmit}
-            className="flex flex-col mt-4 mb-2 mx-4 items-center text-center"
+            className="flex flex-col mx-4 mb-2 items-center text-center"
           >
-            <span>You are ranked {rank}. Please enter your name</span>
             <input
               ref={inputRef}
               type="text"

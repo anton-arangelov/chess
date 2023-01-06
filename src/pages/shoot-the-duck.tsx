@@ -16,10 +16,6 @@ const buttons = [
   { description: 'Add a cola', name: 'Cola' }
 ]
 
-let timeout: ReturnType<typeof setTimeout> | null
-let scoreData: ScoreData = []
-let currentRank: number | undefined
-
 const ShootTheDuck = () => {
   const [items, setItems] = useState<{ name: string; quantity: number }[]>([])
   const [isGiftAvailable, setIsGiftAvailable] = useState(false)
@@ -37,8 +33,12 @@ const ShootTheDuck = () => {
   const [rank, setRank] = useState<number | undefined>()
   const [name, setName] = useState('')
   const [isResultSubmitted, setIsResultSubmitted] = useState(false)
+  const [isFetchingLoading, setIsFetchingLoading] = useState(false)
 
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const scoreData = useRef<ScoreData>([])
+  const currentRank = useRef<number | undefined>(undefined)
 
   const numberOfItems = useMemo(
     () =>
@@ -84,16 +84,16 @@ const ShootTheDuck = () => {
       if (!isGameStarted) {
         return
       }
-      if (timeout) {
-        clearTimeout(timeout)
-        timeout = null
+      if (timeout.current) {
+        clearTimeout(timeout.current)
+        timeout.current = null
       }
       setIsClicked(true)
       setClickCoordinates({
         x: Math.floor(e.clientX) - 1,
         y: Math.floor(e.clientY) - 1
       })
-      timeout = setTimeout(() => {
+      timeout.current = setTimeout(() => {
         setIsClicked(false)
       }, 300)
     },
@@ -114,8 +114,8 @@ const ShootTheDuck = () => {
     setRank(undefined)
     setName('')
     setIsResultSubmitted(false)
-    scoreData = []
-    currentRank = undefined
+    scoreData.current = []
+    currentRank.current = undefined
     timer.stop()
     if (!isNotificationVisible) {
       setIsGameStarted(false)
@@ -164,25 +164,31 @@ const ShootTheDuck = () => {
     if (missedDucksCount === 20) {
       if (score !== 0) {
         const getScores = async () => {
-          const result = await axios.post('api/scores', {
-            method: 'get'
-          })
-          scoreData = result.data
+          setIsFetchingLoading(true)
+          try {
+            const result = await axios.post('api/scores', {
+              method: 'get'
+            })
+            scoreData.current = result.data
 
-          const firstScore = result.data?.[0]?.score
-          const secondScore = result.data?.[1]?.score
-          const thirdScore = result.data?.[2]?.score
-          if (typeof thirdScore === 'number' && score > thirdScore) {
-            currentRank = 3
-          }
-          if (typeof secondScore === 'number' && score > secondScore) {
-            currentRank = 2
-          }
-          if (typeof firstScore === 'number' && score > firstScore) {
-            currentRank = 1
-          }
-          if (currentRank) {
-            setRank(currentRank)
+            const firstScore = result.data?.[0]?.score
+            const secondScore = result.data?.[1]?.score
+            const thirdScore = result.data?.[2]?.score
+            if (typeof thirdScore === 'number' && score > thirdScore) {
+              currentRank.current = 3
+            }
+            if (typeof secondScore === 'number' && score > secondScore) {
+              currentRank.current = 2
+            }
+            if (typeof firstScore === 'number' && score > firstScore) {
+              currentRank.current = 1
+            }
+            if (currentRank.current) {
+              setRank(currentRank.current)
+            }
+          } catch (e) {
+          } finally {
+            setIsFetchingLoading(false)
           }
         }
         getScores()
@@ -192,14 +198,21 @@ const ShootTheDuck = () => {
   }, [missedDucksCount, score])
 
   useEffect(() => {
-    if (name && scoreData.length) {
+    if (name && scoreData.current.length) {
       const updateScore = async () => {
-        if (currentRank) {
-          scoreData?.splice(currentRank - 1, 0, { name, score })
-          scoreData?.pop()
+        if (currentRank.current) {
+          scoreData.current?.splice(currentRank.current - 1, 0, { name, score })
+          scoreData.current?.pop()
         }
-        await axios.post('api/scores', { method: 'put', data: scoreData })
-        setIsResultSubmitted(true)
+        try {
+          await axios.post('api/scores', {
+            method: 'put',
+            data: scoreData.current
+          })
+        } catch (e) {
+        } finally {
+          setIsResultSubmitted(true)
+        }
       }
       updateScore()
     }
@@ -249,12 +262,23 @@ const ShootTheDuck = () => {
       {isNotificationVisible && (
         <Notification
           notificationText="Game is over"
+          secondaryText={
+            rank && !name
+              ? `You are ranked ${rank}. Please enter your name`
+              : `You are not ranked. Highest score is ${
+                  scoreData.current[0]?.score
+                    ? scoreData.current[0].score
+                    : 'unknown'
+                }`
+          }
           isDuckNotification
           name={name}
           rank={rank}
+          score={score}
           isResultSubmitted={isResultSubmitted}
           inputRef={inputRef}
-          scoreData={scoreData}
+          scoreData={scoreData.current}
+          isFetchingLoading={isFetchingLoading}
           handleNotificationClick={resetGame}
           handleFormSubmit={handleFormSubmit}
         />
