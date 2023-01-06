@@ -1,10 +1,9 @@
 import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { GetScoresData } from '../../config/types'
 
 const getScoresHandler = async (
   _req: NextApiRequest,
-  res: NextApiResponse<GetScoresData>
+  res: NextApiResponse
 ): Promise<void> => {
   try {
     const result = await axios.get(
