@@ -33,7 +33,7 @@ export const MillionaireMenu = ({
         <button
           onClick={handleEliminationClick}
           className={classNames(
-            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] mr-2 sm:mr-10 cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60',
+            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] mr-2 sm:mr-10 cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60 outline-none',
             {
               'opacity-60 pointer-events-none scale-75': isEliminationUsed
             }
@@ -44,9 +44,9 @@ export const MillionaireMenu = ({
         <button
           onClick={handleTelephoneClick}
           className={classNames(
-            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] mr-2 sm:mr-10 cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60',
+            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] mr-2 sm:mr-10 cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60 outline-none',
             {
-              'opacity-60 pointer-event-none scale-75': isTelephoneUsed
+              'opacity-60 pointer-events-none scale-75': isTelephoneUsed
             }
           )}
         >
@@ -55,7 +55,7 @@ export const MillionaireMenu = ({
         <button
           onClick={handleAudienceClick}
           className={classNames(
-            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60',
+            'w-[60px] sm:w-[80px] h-[40px] sm:h-[55px] cursor-pointer transition duration-200 hover:scale-125 hover:opacity-60 outline-none',
             {
               'opacity-60 pointer-events-none scale-75': isAudienceUsed
             }

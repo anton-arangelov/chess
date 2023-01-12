@@ -40,7 +40,7 @@ export const AnswerButton = ({
         'before:top-[27px] before:absolute before:border-b-[3px] before:border-l-[3px] before:border-yellow-600',
         'before:rotate-45 before:-left-3 before:hover:bg-yellow-700',
         'bg-blue-900 h-[60px] mx-auto w-[calc(100%_-_58px)] border-b-[3px] border-t-[3px] border-yellow-600',
-        'text-white font-extrabold text-start hover:bg-yellow-700 pl-2',
+        'text-white font-extrabold text-start hover:bg-yellow-700 pl-2 outline-none',
         'after:bg-blue-900 after:h-[41px] after:w-[41px] after:origin-top-left',
         'after:-top-[2px] after:absolute after:border-t-[3px] after:border-r-[3px] after:border-yellow-600',
         'after:rotate-45 after:-right-[42px] after:hover:bg-yellow-700',
