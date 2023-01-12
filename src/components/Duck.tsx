@@ -2,6 +2,40 @@ import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { CustomBaseSyntheticEvent } from '../config/types'
 
+// This helper is declared here because of tailwind specifications and if it is in the helpers file, it is not working every time
+const getDuckAnimation = (animationNumber: number) => {
+  if (animationNumber === 1) {
+    return '-left-10 animate-slide-xs-one sm:animate-slide-one'
+  }
+  if (animationNumber === 2) {
+    return '-left-10 animate-slide-xs-two sm:animate-slide-two'
+  }
+  if (animationNumber === 3) {
+    return '-left-10 animate-slide-xs-three sm:animate-slide-three'
+  }
+  if (animationNumber === 4) {
+    return '-left-10 animate-slide-xs-four sm:animate-slide-four'
+  }
+  if (animationNumber === 5) {
+    return '-left-10 animate-slide-xs-five sm:animate-slide-five'
+  }
+  if (animationNumber === 6) {
+    return '-left-10 animate-slide-xs-six sm:animate-slide-six'
+  }
+  if (animationNumber === 7) {
+    return '-left-10 animate-slide-xs-seven sm:animate-slide-seven'
+  }
+  if (animationNumber === 8) {
+    return '-left-10 animate-slide-xs-eight sm:animate-slide-eight'
+  }
+  if (animationNumber === 9) {
+    return '-right-10 animate-slide-xs-nine sm:animate-slide-nine'
+  }
+  if (animationNumber === 10) {
+    return '-right-10 animate-slide-xs-ten sm:animate-slide-ten'
+  }
+}
+
 type DuckProps = {
   animationNumber: number
   handleDuckClicked: (e: CustomBaseSyntheticEvent) => void
@@ -17,33 +51,13 @@ export const Duck = ({ animationNumber, handleDuckClicked }: DuckProps) => {
   return (
     <button
       className={classNames(
-        'absolute justify-center top-10 transition duration-300 cursor-crosshair flex',
-        {
-          '-left-10 animate-slide-xs-one sm:animate-slide-one':
-            animationNumber === 1,
-          '-left-10 animate-slide-xs-two sm:animate-slide-two':
-            animationNumber === 2,
-          '-left-10 animate-slide-xs-three sm:animate-slide-three':
-            animationNumber === 3,
-          '-left-10 animate-slide-xs-four sm:animate-slide-four':
-            animationNumber === 4,
-          '-left-10 animate-slide-xs-five sm:animate-slide-five':
-            animationNumber === 5,
-          '-left-10 animate-slide-xs-six sm:animate-slide-six':
-            animationNumber === 6,
-          '-left-10 animate-slide-xs-seven sm:animate-slide-seven':
-            animationNumber === 7,
-          '-left-10 animate-slide-xs-eight sm:animate-slide-eight':
-            animationNumber === 8,
-          '-right-10 animate-slide-xs-nine sm:animate-slide-nine':
-            animationNumber === 9,
-          '-right-10 animate-slide-xs-ten sm:animate-slide-ten':
-            animationNumber === 10
-        }
+        'absolute justify-center top-10 transition',
+        'duration-300 cursor-crosshair flex',
+        getDuckAnimation(animationNumber)
       )}
-      {...(width && width > 639 && { onPointerDown: handleDuckClicked })}
+      {...(width && width > 767 && { onPointerDown: handleDuckClicked })}
     >
-      {width && width <= 639 && (
+      {width && width <= 767 && (
         <span
           id="duckSpan"
           className="w-6 h-6 absolute left-2 top-2 cursor-crosshair"

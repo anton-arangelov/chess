@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  future: {
+    hoverOnlyWhenSupported: true
+  },
   purge: [
     './src/pages/*.{js,ts,jsx,tsx}',
     './src/components/*.{js,ts,jsx,tsx}'
@@ -7,6 +10,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      screens: {
+        sm: '768px',
+        md: '1024px',
+        lg: '1440px',
+        'hover-hover': { raw: '(hover: hover)' }
+      },
       keyframes: {
         'scale-in-out': {
           '50%': {
@@ -298,6 +307,152 @@ module.exports = {
           '100%': {
             transform: 'translate(-480px, 100%)'
           }
+        },
+        'blink-success': {
+          '0%': {
+            backgroundColor: 'white'
+          },
+          '30%': {
+            backgroundColor: 'rgb(30 58 138)'
+          },
+          '45%': {
+            backgroundColor: 'green'
+          },
+          '60%': {
+            backgroundColor: 'white'
+          },
+          '80%': {
+            backgroundColor: 'green'
+          },
+          '90%': {
+            backgroundColor: 'white'
+          },
+          '100%': {
+            backgroundColor: 'green'
+          }
+        },
+        'blink-failure': {
+          '0%': {
+            backgroundColor: 'white'
+          },
+          '30%': {
+            backgroundColor: 'rgb(30 58 138)'
+          },
+          '45%': {
+            backgroundColor: 'red'
+          },
+          '60%': {
+            backgroundColor: 'white'
+          },
+          '80%': {
+            backgroundColor: 'red'
+          },
+          '90%': {
+            backgroundColor: 'white'
+          },
+          '100%': {
+            backgroundColor: 'red'
+          }
+        },
+        'blink-screen': {
+          '0%': {
+            backgroundColor: 'white'
+          },
+          '40%': {
+            backgroundColor: 'rgb(0,128,0,0.6)'
+          },
+          '60%': {
+            backgroundColor: 'white'
+          },
+          '80%': {
+            backgroundColor: 'rgb(0,128,0,0.6)'
+          },
+          '90%': {
+            backgroundColor: 'white'
+          },
+          '100%': {
+            backgroundColor: 'rgb(0,128,0,0.6)'
+          }
+        },
+        'audience-one': {
+          '0%': {
+            height: '0%'
+          },
+          '20%': {
+            height: '40%'
+          },
+          '40%': {
+            height: '0%'
+          },
+          '60%': {
+            height: '90%'
+          },
+          '80%': {
+            height: '40%'
+          },
+          '100%': {
+            height: '65%'
+          }
+        },
+        'audience-two': {
+          '0%': {
+            height: '0%'
+          },
+          '20%': {
+            height: '80%'
+          },
+          '40%': {
+            height: '10%'
+          },
+          '60%': {
+            height: '30%'
+          },
+          '80%': {
+            height: '10%'
+          },
+          '100%': {
+            height: '40%'
+          }
+        },
+        'audience-three': {
+          '0%': {
+            height: '0%'
+          },
+          '20%': {
+            height: '40%'
+          },
+          '40%': {
+            height: '80%'
+          },
+          '60%': {
+            height: '30%'
+          },
+          '80%': {
+            height: '60%'
+          },
+          '100%': {
+            height: '50%'
+          }
+        },
+        'audience-four': {
+          '0%': {
+            height: '0%'
+          },
+          '20%': {
+            height: '50%'
+          },
+          '40%': {
+            height: '30%'
+          },
+          '60%': {
+            height: '70%'
+          },
+          '80%': {
+            height: '20%'
+          },
+          '100%': {
+            height: '60%'
+          }
         }
       },
       animation: {
@@ -321,7 +476,14 @@ module.exports = {
         'slide-seven': 'slide-in-out-seven 2s linear infinite',
         'slide-eight': 'slide-in-out-eight 2s linear infinite',
         'slide-nine': 'slide-in-out-nine 2s linear infinite',
-        'slide-ten': 'slide-in-out-ten 2s linear infinite'
+        'slide-ten': 'slide-in-out-ten 2s linear infinite',
+        'blink-success': 'blink-success 2s linear',
+        'blink-failure': 'blink-failure 2s linear',
+        'blink-screen': 'blink-screen 2s linear',
+        'audience-one': 'audience-one 2s linear forwards',
+        'audience-two': 'audience-two 2s linear forwards',
+        'audience-three': 'audience-three 2s linear forwards',
+        'audience-four': 'audience-four 2s linear forwards'
       }
     }
   },

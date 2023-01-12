@@ -6,6 +6,7 @@ type NotificationProps = {
   notificationText: string
   secondaryText?: string
   isDuckNotification?: boolean
+  isMillionaireNotification?: boolean
   name?: string
   rank?: number
   score?: number
@@ -21,6 +22,7 @@ export const Notification = ({
   notificationText,
   secondaryText,
   isDuckNotification,
+  isMillionaireNotification,
   name,
   rank,
   score,
@@ -34,12 +36,13 @@ export const Notification = ({
   return (
     <div className="w-full h-full absolute z-30 select-none">
       <div
-        style={{ background: 'rgba(239, 239, 240, 0.6)' }}
         className={classNames(
           'w-[300px] h-[300px] mx-auto flex flex-col justify-center items-center border border-2',
           {
-            'mt-[200px]': !isDuckNotification,
-            'mt-[90px]': isDuckNotification
+            'bg-[rgba(239,239,240,0.8)]': isMillionaireNotification,
+            'bg-[rgba(239,239,240,0.6)]': !isMillionaireNotification,
+            'mt-[90px]': isDuckNotification,
+            'mt-[200px]': !isDuckNotification
           }
         )}
       >
@@ -82,7 +85,10 @@ export const Notification = ({
         {(!isDuckNotification || !rank || name) && (
           <button
             onClick={handleNotificationClick}
-            className="bg-[black] text-white w-[150px] py-1 rounded mt-5"
+            className={classNames('text-white w-[150px] py-1 rounded mt-5', {
+              'bg-blue-900 hover:opacity-90': isMillionaireNotification,
+              'bg-black': !isMillionaireNotification
+            })}
           >
             Ok
           </button>
