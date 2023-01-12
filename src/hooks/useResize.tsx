@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { isOverflown, resizeText } from '../../config/helpers'
+import { isOverflown, resizeText } from '../config/helpers'
 
 export const useResize = ({
   parentRef,

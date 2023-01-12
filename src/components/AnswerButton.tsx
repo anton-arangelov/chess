@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useEffect, useRef } from 'react'
 import { getAnswerLetter } from '../config/helpers'
-import { useResize } from '../pages/hooks/useResize'
+import { useResize } from '../hooks/useResize'
 
 type AnswerButtonsProps = {
   answer: string

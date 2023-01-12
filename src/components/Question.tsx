@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { useRef } from 'react'
-import { useResize } from '../pages/hooks/useResize'
+import { useResize } from '../hooks/useResize'
 
 type QuestionProps = {
   question: string
