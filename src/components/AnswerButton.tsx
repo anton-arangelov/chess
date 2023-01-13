@@ -31,7 +31,6 @@ export const AnswerButton = ({
     trigger: answer
   })
 
-  useEffect(() => {}, [])
   return (
     <button
       onClick={() => handleAnswerClick(index, isCorrectAnswer)}
@@ -57,7 +56,7 @@ export const AnswerButton = ({
         }
       )}
     >
-      {answer && isNewQuestionFullyLoaded && (
+      {isNewQuestionFullyLoaded && (
         <div
           ref={parentRef}
           className={classNames(
