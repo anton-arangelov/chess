@@ -299,10 +299,10 @@ export const getNotificationText = ({
     return 'Печелиш 100 000лв'
   }
   let sum = '0'
-  if (questionLevel > 5 && questionLevel < 11) {
+  if (questionLevel === 5) {
     sum = '500'
   }
-  if (questionLevel >= 11) {
+  if (questionLevel === 10) {
     sum = '5 000'
   }
   return `Грешен отговор. Спечелената сума е ${sum}лв`

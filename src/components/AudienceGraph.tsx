@@ -37,7 +37,7 @@ export const AudienceGraph = ({
   return (
     <div
       className={classNames(
-        'z-10 fixed top-[180px] left-[calc(50%-100px)] w-[200px] h-[200px]',
+        'z-20 fixed top-[130px] sm:top-[180px] left-[calc(50%-100px)] w-[200px] h-[200px]',
         'rounded-md border border-[3px] border-yellow-600 bg-[rgb(30,58,138,0.6)]',
         'grid grid-cols-4 flex justify-center text-center'
       )}

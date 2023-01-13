@@ -30,6 +30,7 @@ const Millionaire = () => {
     useState(false)
   const [shouldAnimateCorrectAnswer, setShouldAnimateCorrectAnswer] =
     useState(false)
+  const [shouldAnimateLockedSum, setShouldAnimateLockedSum] = useState(false)
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
   const [isAudienceGraphVisible, setIsAudienceGraphVisible] = useState(false)
   const [gameOver, setGameOver] = useState<{ hasWon: boolean } | undefined>()
@@ -46,18 +47,17 @@ const Millionaire = () => {
     setIsAudienceUsed(false)
     setShouldAnimateCorrectAnswer(false)
     setIsNotificationVisible(false)
-    setIsAudienceGraphVisible(false)
     setGameOver(undefined)
     audienceAnswersRef.current = {}
   }
 
   const handleAnswerClick = (index: number, isCorrectAnswer: boolean) => {
     setClickedButton(index)
+    if (isAudienceGraphVisible) {
+      setIsAudienceGraphVisible(false)
+    }
     setTimeout(() => {
       setClickedButton(undefined)
-      if (isAudienceGraphVisible) {
-        setIsAudienceGraphVisible(false)
-      }
       if (isCorrectAnswer) {
         if (questionLevel === 15) {
           setIsNotificationVisible(true)
@@ -76,7 +76,7 @@ const Millionaire = () => {
       if (questionLevel > 5) {
         return setQuestionLevel(5)
       }
-      return setQuestionLevel(1)
+      return setQuestionLevel(0)
     }, 2000)
     if (!isCorrectAnswer) {
       setTimeout(() => {
@@ -155,6 +155,12 @@ const Millionaire = () => {
         ]
       )
     }
+    if (questionLevel === 6 || questionLevel === 11 || gameOver?.hasWon) {
+      setShouldAnimateLockedSum(true)
+      setTimeout(() => {
+        setShouldAnimateLockedSum(false)
+      }, 2000)
+    }
   }, [questionLevel, gameOver])
 
   useEffect(() => {
@@ -162,18 +168,16 @@ const Millionaire = () => {
   }, [])
 
   return (
-    <div
-      className={classNames('h-screen', {
-        'animate-blink-screen':
-          questionLevel === 6 || questionLevel === 11 || gameOver?.hasWon
-      })}
-    >
+    <>
       <img
         className="w-full fixed -z-10 select-none pointer-events-none h-screen"
         alt=""
         src={millionaireImage.src}
       />
-      {isNotificationVisible && (
+      {shouldAnimateLockedSum && (
+        <span className="animate-blink-screen h-screen w-full fixed z-30" />
+      )}
+      {isNotificationVisible && !shouldAnimateLockedSum && (
         <Notification
           notificationText={
             gameOver
@@ -205,19 +209,23 @@ const Millionaire = () => {
           answers={question.answers}
         />
       )}
-      <div className="w-full relative mt-[40px]">
+      <div
+        className={classNames('w-full relative mt-[40px]', {
+          'opacity-0': shouldAnimateLockedSum || gameOver?.hasWon
+        })}
+      >
         <Question
           question={question?.question ?? ''}
           screenWidth={screenWidth}
         />
-        <div className="w-full grid grid-cols-[10%_40%_40%_10%] grid-rows-2 gap-y-8 mt-10">
+        <div className="grid grid-cols-[10%_40%_40%_10%] grid-rows-2 gap-y-8 mt-10">
           {screenWidth > 767 && (
             <span className="row-start-1 h-[3px] bg-yellow-600 my-auto"></span>
           )}
           {screenWidth > 767 && (
             <span className="row-start-2 h-[3px] bg-yellow-600 my-auto"></span>
           )}
-          <div className="col-start-1 sm:col-start-2 col-end-5 sm:col-end-4 row-start-1 row-end-3 grid grid-cols-2 grid-rows-2 gap-y-8">
+          <div className="col-start-1 sm:col-start-2 col-end-5 sm:col-end-4 row-start-1 row-end-3 grid grid-cols-2 grid-rows-2 gap-y-8 sm:gap-x-[2px]">
             {question?.answers?.map((answer, index) => {
               return (
                 <AnswerButton
@@ -241,7 +249,7 @@ const Millionaire = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

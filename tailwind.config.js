@@ -14,7 +14,7 @@ module.exports = {
         sm: '768px',
         md: '1024px',
         lg: '1440px',
-        'hover-hover': { raw: '(hover: hover)' }
+        'xs-only': { max: '767px' }
       },
       keyframes: {
         'scale-in-out': {
