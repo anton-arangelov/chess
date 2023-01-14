@@ -40,7 +40,6 @@ const Millionaire = () => {
   const audienceAnswersRef = useRef({})
 
   const resetGame = () => {
-    setQuestion(QUESTIONS[0][Math.floor(Math.random() * QUESTIONS[0].length)])
     setQuestionLevel(1)
     setIsEliminationUsed(false)
     setIsTelephoneUsed(false)
