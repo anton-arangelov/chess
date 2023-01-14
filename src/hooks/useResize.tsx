@@ -15,14 +15,18 @@ export const useResize = ({
   const [isNewQuestionFullyLoaded, setIsNewQuestionFullyLoaded] =
     useState(false)
   const [isTextResized, setIsTextResized] = useState(false)
+  const [, seShouldRender] = useState(false)
 
   useEffect(() => {
     if (trigger) {
-      setIsNewQuestionFullyLoaded(false)
       setIsTextResized(false)
+      seShouldRender(false)
       setTimeout(() => {
         setIsNewQuestionFullyLoaded(true)
       }, 50)
+    }
+    return () => {
+      setIsNewQuestionFullyLoaded(false)
     }
   }, [trigger])
 
@@ -43,8 +47,10 @@ export const useResize = ({
           }
         }
       }
-
-      setIsTextResized(true)
+      seShouldRender(true)
+      setTimeout(() => {
+        setIsTextResized(true)
+      }, 50)
     }
   }, [isNewQuestionFullyLoaded, childRef, parentRef, isQuestion])
   return { isNewQuestionFullyLoaded, isTextResized }
