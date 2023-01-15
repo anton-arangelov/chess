@@ -75,21 +75,17 @@ export const AnswerButton = ({
       {answer && (
         <div
           ref={parentRef}
-          className="flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10"
+          className={classNames(
+            'flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10',
+            {
+              'opacity-0': !isTextResized
+            }
+          )}
         >
           <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
             {getAnswerLetter(index + 1)}:
           </span>
-          {shouldDisplayText && (
-            <span
-              ref={childRef}
-              className={classNames({
-                'opacity-0': !isTextResized
-              })}
-            >
-              {answer}
-            </span>
-          )}
+          {shouldDisplayText && <span ref={childRef}>{answer}</span>}
         </div>
       )}
     </button>
