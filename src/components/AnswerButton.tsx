@@ -8,8 +8,6 @@ type AnswerButtonsProps = {
   answer: string
   index: number
   shouldDisplayText: boolean
-  isTextResized: boolean
-  setIsTextResized: any
   clickedButton: number | undefined
   isCorrectAnswer: boolean
   isAudienceGraphAnimating: boolean
@@ -21,8 +19,6 @@ export const AnswerButton = ({
   answer,
   index,
   shouldDisplayText,
-  isTextResized,
-  setIsTextResized,
   clickedButton,
   isCorrectAnswer,
   isAudienceGraphAnimating,
@@ -33,7 +29,7 @@ export const AnswerButton = ({
   const childRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    if (answer) {
+    if (shouldDisplayText) {
       if (
         parentRef.current &&
         isOverflown(parentRef.current) &&
@@ -44,9 +40,8 @@ export const AnswerButton = ({
           parent: parentRef.current
         })
       }
-      setIsTextResized(true)
     }
-  }, [answer, setIsTextResized])
+  }, [shouldDisplayText])
 
   return (
     <button
@@ -73,22 +68,15 @@ export const AnswerButton = ({
         }
       )}
     >
-      {shouldDisplayText && (
-        <div
-          ref={parentRef}
-          className={classNames(
-            'flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10',
-            {
-              'opacity-0': !isTextResized
-            }
-          )}
-        >
-          <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
-            {getAnswerLetter(index + 1)}:
-          </span>
-          <span ref={childRef}>{answer}</span>
-        </div>
-      )}
+      <div
+        ref={parentRef}
+        className="flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10"
+      >
+        <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
+          {getAnswerLetter(index + 1)}:
+        </span>
+        {shouldDisplayText && <span ref={childRef}>{answer}</span>}
+      </div>
     </button>
   )
 }

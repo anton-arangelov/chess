@@ -7,16 +7,12 @@ type QuestionProps = {
   question: string
   screenWidth: number
   shouldDisplayText: boolean
-  isTextResized: boolean
-  setIsTextResized: any
 }
 
 export const Question = ({
   question,
   screenWidth,
-  shouldDisplayText,
-  isTextResized,
-  setIsTextResized
+  shouldDisplayText
 }: QuestionProps) => {
   const parentRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLParagraphElement>(null)
@@ -33,9 +29,8 @@ export const Question = ({
           parent: parentRef.current
         })
       }
-      setIsTextResized(true)
     }
-  }, [question, setIsTextResized])
+  }, [question])
 
   return (
     <div className="w-full flex">
@@ -51,12 +46,7 @@ export const Question = ({
           className="bg-blue-900 text-white w-[calc(100%_-_60px)] border-t-[3px] border-b-[3px] border-yellow-600 text-center"
         >
           {shouldDisplayText && (
-            <p
-              ref={childRef}
-              className={classNames('font-extrabold py-[2px]', {
-                'opacity-0': !isTextResized
-              })}
-            >
+            <p ref={childRef} className="font-extrabold py-[2px]">
               {question}
             </p>
           )}

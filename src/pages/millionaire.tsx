@@ -224,8 +224,6 @@ const Millionaire = () => {
           question={question?.question ?? ''}
           screenWidth={screenWidth}
           shouldDisplayText={shouldDisplayText}
-          isTextResized={isTextResized}
-          setIsTextResized={setIsTextResized}
         />
         <div className="grid grid-cols-[10%_40%_40%_10%] grid-rows-2 gap-y-8 mt-10">
           {screenWidth > 767 && (
@@ -242,8 +240,6 @@ const Millionaire = () => {
                   index={index}
                   answer={answer}
                   shouldDisplayText={shouldDisplayText}
-                  isTextResized={isTextResized}
-                  setIsTextResized={setIsTextResized}
                   clickedButton={clickedButton}
                   isCorrectAnswer={question.correct === index + 1}
                   isAudienceGraphAnimating={isAudienceGraphAnimating}
