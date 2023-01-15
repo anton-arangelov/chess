@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { getAnswerLetter } from '../config/helpers'
-import { isOverflown, resizeText } from '../config/helpers'
+import { useResize } from '../hooks/useResize'
 
 type AnswerButtonsProps = {
   answer: string
@@ -31,21 +31,12 @@ export const AnswerButton = ({
   const parentRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLSpanElement>(null)
 
-  useEffect(() => {
-    if (answer) {
-      if (
-        parentRef.current &&
-        isOverflown(parentRef.current) &&
-        childRef.current
-      ) {
-        resizeText({
-          element: childRef.current,
-          parent: parentRef.current
-        })
-      }
-      setIsTextResized(true)
-    }
-  }, [answer, setIsTextResized])
+  useResize({
+    childRef: childRef.current,
+    parentRef: parentRef.current,
+    trigger: answer,
+    setIsTextResized
+  })
 
   return (
     <button
@@ -72,24 +63,26 @@ export const AnswerButton = ({
         }
       )}
     >
-      <div
-        ref={parentRef}
-        className="flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10"
-      >
-        <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
-          {getAnswerLetter(index + 1)}:
-        </span>
-        {shouldDisplayText && (
-          <span
-            ref={childRef}
-            className={classNames({
-              'opacity-0': !isTextResized
-            })}
-          >
-            {answer}
+      {answer && (
+        <div
+          ref={parentRef}
+          className="flex items-center h-[40px] sm:h-[54px] overflow-hidden relative z-10"
+        >
+          <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
+            {getAnswerLetter(index + 1)}:
           </span>
-        )}
-      </div>
+          {shouldDisplayText && (
+            <span
+              ref={childRef}
+              className={classNames({
+                'opacity-0': !isTextResized
+              })}
+            >
+              {answer}
+            </span>
+          )}
+        </div>
+      )}
     </button>
   )
 }

@@ -1,57 +1,26 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { isOverflown, resizeText } from '../config/helpers'
 
 export const useResize = ({
   parentRef,
   childRef,
   trigger,
-  isQuestion
+  setIsTextResized
 }: {
   parentRef: HTMLDivElement | null
   childRef: HTMLParagraphElement | HTMLSpanElement | null
   trigger: string
-  isQuestion?: boolean
+  setIsTextResized: Dispatch<SetStateAction<boolean>>
 }) => {
-  const [isNewQuestionFullyLoaded, setIsNewQuestionFullyLoaded] =
-    useState(false)
-  const [isTextResized, setIsTextResized] = useState(false)
-  const [, setShouldRender] = useState(false)
-
   useEffect(() => {
     if (trigger) {
-      setIsTextResized(false)
-      setShouldRender(false)
-      setTimeout(() => {
-        setIsNewQuestionFullyLoaded(true)
-      }, 50)
-    }
-    return () => {
-      setIsNewQuestionFullyLoaded(false)
-    }
-  }, [trigger])
-
-  useEffect(() => {
-    if (isNewQuestionFullyLoaded) {
       if (parentRef && isOverflown(parentRef) && childRef) {
         resizeText({
           element: childRef,
           parent: parentRef
         })
-      } else {
-        if (childRef && parentRef && isQuestion) {
-          childRef.style.lineHeight = '28px'
-          childRef.style.fontSize = '20px'
-          if (isOverflown(parentRef)) {
-            childRef.style.lineHeight = '24px'
-            childRef.style.fontSize = '16px'
-          }
-        }
       }
-      setShouldRender(true)
-      setTimeout(() => {
-        setIsTextResized(true)
-      }, 50)
+      setIsTextResized(true)
     }
-  }, [isNewQuestionFullyLoaded, childRef, parentRef, isQuestion])
-  return { isNewQuestionFullyLoaded, isTextResized }
+  }, [childRef, parentRef, setIsTextResized, trigger])
 }
