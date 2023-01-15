@@ -1,11 +1,15 @@
 import classNames from 'classnames'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getAnswerLetter } from '../config/helpers'
-import { useResize } from '../hooks/useResize'
+// import { useResize } from '../hooks/useResize'
+import { isOverflown, resizeText } from '../config/helpers'
 
 type AnswerButtonsProps = {
   answer: string
   index: number
+  shouldDisplayText: boolean
+  isTextResized: boolean
+  setIsTextResized: any
   clickedButton: number | undefined
   isCorrectAnswer: boolean
   isAudienceGraphAnimating: boolean
@@ -16,6 +20,9 @@ type AnswerButtonsProps = {
 export const AnswerButton = ({
   answer,
   index,
+  shouldDisplayText,
+  isTextResized,
+  setIsTextResized,
   clickedButton,
   isCorrectAnswer,
   isAudienceGraphAnimating,
@@ -25,11 +32,21 @@ export const AnswerButton = ({
   const parentRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLSpanElement>(null)
 
-  const { isNewQuestionFullyLoaded, isTextResized } = useResize({
-    parentRef: parentRef.current,
-    childRef: childRef.current,
-    trigger: answer
-  })
+  useEffect(() => {
+    if (answer) {
+      if (
+        parentRef.current &&
+        isOverflown(parentRef.current) &&
+        childRef.current
+      ) {
+        resizeText({
+          element: childRef.current,
+          parent: parentRef.current
+        })
+      }
+      setIsTextResized(true)
+    }
+  }, [answer, setIsTextResized])
 
   return (
     <button
@@ -56,7 +73,7 @@ export const AnswerButton = ({
         }
       )}
     >
-      {isNewQuestionFullyLoaded && (
+      {shouldDisplayText && (
         <div
           ref={parentRef}
           className={classNames(
