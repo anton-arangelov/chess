@@ -1,18 +1,21 @@
 import classNames from 'classnames'
-import { useEffect, useRef, useState } from 'react'
-import { useResize } from '../hooks/useResize'
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { isOverflown, resizeText } from '../config/helpers'
 
 type QuestionProps = {
   question: string
   screenWidth: number
   shouldDisplayText: boolean
+  isTextResized: boolean
+  setIsTextResized: Dispatch<SetStateAction<boolean>>
 }
 
 export const Question = ({
   question,
   screenWidth,
-  shouldDisplayText
+  shouldDisplayText,
+  isTextResized,
+  setIsTextResized
 }: QuestionProps) => {
   const parentRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLParagraphElement>(null)
@@ -29,8 +32,9 @@ export const Question = ({
           parent: parentRef.current
         })
       }
+      setIsTextResized(true)
     }
-  }, [question])
+  }, [question, setIsTextResized])
 
   return (
     <div className="w-full flex">
@@ -46,7 +50,12 @@ export const Question = ({
           className="bg-blue-900 text-white w-[calc(100%_-_60px)] border-t-[3px] border-b-[3px] border-yellow-600 text-center"
         >
           {shouldDisplayText && (
-            <p ref={childRef} className="font-extrabold py-[2px]">
+            <p
+              ref={childRef}
+              className={classNames('font-extrabold py-[2px]', {
+                'opacity-0': !isTextResized
+              })}
+            >
               {question}
             </p>
           )}

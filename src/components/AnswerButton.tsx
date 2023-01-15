@@ -1,13 +1,14 @@
 import classNames from 'classnames'
-import { useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { getAnswerLetter } from '../config/helpers'
-// import { useResize } from '../hooks/useResize'
 import { isOverflown, resizeText } from '../config/helpers'
 
 type AnswerButtonsProps = {
   answer: string
   index: number
   shouldDisplayText: boolean
+  isTextResized: boolean
+  setIsTextResized: Dispatch<SetStateAction<boolean>>
   clickedButton: number | undefined
   isCorrectAnswer: boolean
   isAudienceGraphAnimating: boolean
@@ -19,6 +20,8 @@ export const AnswerButton = ({
   answer,
   index,
   shouldDisplayText,
+  isTextResized,
+  setIsTextResized,
   clickedButton,
   isCorrectAnswer,
   isAudienceGraphAnimating,
@@ -29,7 +32,7 @@ export const AnswerButton = ({
   const childRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    if (shouldDisplayText) {
+    if (answer) {
       if (
         parentRef.current &&
         isOverflown(parentRef.current) &&
@@ -40,8 +43,9 @@ export const AnswerButton = ({
           parent: parentRef.current
         })
       }
+      setIsTextResized(true)
     }
-  }, [shouldDisplayText])
+  }, [answer, setIsTextResized])
 
   return (
     <button
@@ -75,7 +79,16 @@ export const AnswerButton = ({
         <span className="mr-1 sm:mr-2 my-auto sm:text-base md:text-xl text-yellow-600">
           {getAnswerLetter(index + 1)}:
         </span>
-        {shouldDisplayText && <span ref={childRef}>{answer}</span>}
+        {shouldDisplayText && (
+          <span
+            ref={childRef}
+            className={classNames({
+              'opacity-0': !isTextResized
+            })}
+          >
+            {answer}
+          </span>
+        )}
       </div>
     </button>
   )
