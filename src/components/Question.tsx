@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
-import { useResize } from '../hooks/useResize'
+import { isOverflown, resizeText } from '../config/helpers'
 
 type QuestionProps = {
   question: string
@@ -20,12 +20,21 @@ export const Question = ({
   const parentRef = useRef<HTMLDivElement>(null)
   const childRef = useRef<HTMLParagraphElement>(null)
 
-  useResize({
-    childRef: childRef.current,
-    parentRef: parentRef.current,
-    trigger: question,
-    setIsTextResized
-  })
+  useEffect(() => {
+    if (question) {
+      if (
+        parentRef.current &&
+        isOverflown(parentRef.current) &&
+        childRef.current
+      ) {
+        resizeText({
+          element: childRef.current,
+          parent: parentRef.current
+        })
+      }
+      setIsTextResized(true)
+    }
+  }, [question, setIsTextResized])
 
   return (
     <div className="w-full flex">
