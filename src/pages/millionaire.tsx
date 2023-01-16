@@ -179,6 +179,7 @@ const Millionaire = () => {
         className="w-full fixed -z-10 select-none pointer-events-none h-screen"
         alt=""
         src={millionaireImage.src}
+        loading="lazy"
       />
       {shouldAnimateLockedSum && (
         <span className="animate-blink-screen h-screen w-full fixed z-30" />
