@@ -137,6 +137,9 @@ const Millionaire = () => {
       question,
       isEliminationUsed
     })
+    if (window.innerHeight <= 330) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
     setTimeout(() => {
       setIsAudienceGraphAnimating(false)
     }, 2000)
