@@ -32,7 +32,7 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
           <img
             src={menu.src}
             alt=""
-            className="w-10 sm:w-[60px] h-10 sm:h-[60px] bg-gray-200 rounded-full active:scale-75"
+            className="w-10 sm:w-[60px] h-10 sm:h-[60px] bg-gray-200 rounded-full transition duration-200 active:scale-75"
           />
         </button>
         <div
