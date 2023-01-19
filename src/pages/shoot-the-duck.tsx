@@ -298,7 +298,7 @@ const ShootTheDuck = () => {
       <span> Score is {score}</span>
       <span> Missed ducks are {missedDucksCount}</span>
       <button
-        className="bg-green-300 rounded-md px-10 py-1 sm:hover:bg-green-400 active:bg-green-500 sm:active:bg-green-500 mt-2"
+        className="bg-green-300 rounded-md px-10 py-1 sm:hover:bg-green-400 active:bg-green-500 sm:active:bg-green-500 mt-2 outline-none"
         onClick={() => {
           if (!isGameStarted) {
             setIsGameStarted(true)

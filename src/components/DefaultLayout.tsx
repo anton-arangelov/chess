@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { BaseSyntheticEvent, ReactNode, useState } from 'react'
-import menu from '../assets/menu-image.jpg'
+import menu from '../assets/menu.png'
 
 export const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const { asPath, push } = useRouter()
@@ -22,7 +22,7 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
       <div className="relative" onClick={handleNavigation}>
         <button
           id="menuIcon"
-          className={classNames('fixed left-3 z-40', {
+          className={classNames('fixed left-3 z-40 outline-none', {
             'top-[60px]': asPath.includes('millionaire'),
             'top-[8%]': asPath === '/',
             'bottom-[60px]': asPath.includes('shoot-the-duck')
@@ -32,13 +32,13 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
           <img
             src={menu.src}
             alt=""
-            className="w-10 sm:w-[60px] h-10 sm:h-[60px] rounded-[10px]"
+            className="w-10 sm:w-[60px] h-10 sm:h-[60px] bg-gray-200 rounded-full active:scale-75"
           />
         </button>
         <div
           id="gameMenu"
           className={classNames(
-            '-translate-y-[48px] w-full py-3 bg-yellow-100 rounded-b',
+            '-translate-y-[48px] w-full py-3 bg-gray-200 rounded-b',
             'flex justify-between items-center px-10 fixed z-40 transition duration-300',
             {
               'translate-y-0': shouldAppear

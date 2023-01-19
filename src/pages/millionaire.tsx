@@ -177,7 +177,7 @@ const Millionaire = () => {
   }, [])
 
   return (
-    <div className="relative">
+    <>
       <img
         className="w-full fixed -z-10 select-none pointer-events-none h-screen"
         alt=""
@@ -265,7 +265,7 @@ const Millionaire = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
