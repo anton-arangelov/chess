@@ -128,7 +128,7 @@ const ImageZoom = () => {
     >
       <div className="flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center">
         <div
-          className="h-[300px] md:h-[500px] w-[300px] md:w-[500px]"
+          className="h-[300px] md:h-[500px] w-[300px] md:w-[500px] touch-none"
           id="game-map"
           onPointerDown={handleContainerPointerDown}
         >
