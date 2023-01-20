@@ -123,7 +123,7 @@ const ImageZoom = () => {
   return (
     <div
       onPointerUp={() => setIsDraggableBoxClicked(false)}
-      className="h-screen touch-none"
+      className="h-screen"
       onPointerMove={handleDrag}
     >
       <div className="flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center">
