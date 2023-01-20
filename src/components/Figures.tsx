@@ -2,6 +2,7 @@ import { initialWhiteFigures, initialBlackFigures } from '../pages/index'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { calculatePositionY, calculatePositionX } from '../config/helpers'
+import { useScreenWidth } from '../hooks/useScreenWidth'
 
 type FiguresProps = {
   areWhiteFigures?: boolean
@@ -21,10 +22,7 @@ export const Figures = ({
   isWhiteTurn,
   handleFigureClicked
 }: FiguresProps) => {
-  const [width, setWidth] = useState<number>()
-  useEffect(() => {
-    setWidth(window.innerWidth)
-  }, [])
+  const { screenWidth } = useScreenWidth()
 
   return (
     <>
@@ -38,8 +36,8 @@ export const Figures = ({
                   handleFigureClicked(figure, positionX, positionY, role)
                 }
                 style={{
-                  top: width && calculatePositionY(positionY, width),
-                  left: width && calculatePositionX(positionX, width)
+                  top: calculatePositionY(positionY, screenWidth),
+                  left: calculatePositionX(positionX, screenWidth)
                 }}
                 className={classNames(
                   'border border-transparent border-[4px] rounded absolute max-w-[37.5px] sm:max-w-none',

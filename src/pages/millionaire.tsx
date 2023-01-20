@@ -14,6 +14,7 @@ import {
   getProbabilityFriendAnswer
 } from '../config/helpers'
 import millionaireImage from '../assets/millionaire-image.jpg'
+import { useScreenWidth } from '../hooks/useScreenWidth'
 
 const Millionaire = () => {
   const [questionLevel, setQuestionLevel] = useState(1)
@@ -34,12 +35,13 @@ const Millionaire = () => {
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
   const [isAudienceGraphVisible, setIsAudienceGraphVisible] = useState(false)
   const [gameOver, setGameOver] = useState<{ hasWon: boolean } | undefined>()
-  const [screenWidth, setScreenWidth] = useState(0)
   const [shouldDisplayText, setShouldDisplayText] = useState(false)
   const [isTextResized, setIsTextResized] = useState(false)
 
   const friendAnswerRef = useRef<string>('')
   const audienceAnswersRef = useRef({})
+
+  const { screenWidth } = useScreenWidth()
 
   const resetGame = () => {
     setQuestionLevel(1)
@@ -171,10 +173,6 @@ const Millionaire = () => {
       }, 2000)
     }
   }, [questionLevel, gameOver])
-
-  useEffect(() => {
-    setScreenWidth(window.innerWidth)
-  }, [])
 
   return (
     <>

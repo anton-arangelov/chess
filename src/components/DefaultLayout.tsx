@@ -25,7 +25,8 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
           className={classNames('fixed left-3 z-40 outline-none', {
             'top-[60px]': asPath.includes('millionaire'),
             'top-[8%]': asPath === '/',
-            'bottom-[60px]': asPath.includes('shoot-the-duck')
+            'bottom-[60px]':
+              asPath.includes('shoot-the-duck') || asPath.includes('image-zoom')
           })}
           onClick={() => setShouldAppear(true)}
         >

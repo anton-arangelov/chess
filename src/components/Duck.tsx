@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { CustomBaseSyntheticEvent } from '../config/types'
+import { useScreenWidth } from '../hooks/useScreenWidth'
 
 // This helper is declared here because of tailwind specifications and if it is in the helpers file, it is not working every time
 const getDuckAnimation = (animationNumber: number) => {
@@ -42,11 +43,7 @@ type DuckProps = {
 }
 
 export const Duck = ({ animationNumber, handleDuckClicked }: DuckProps) => {
-  const [width, setWidth] = useState<number>()
-
-  useEffect(() => {
-    setWidth(window.innerWidth)
-  }, [])
+  const { screenWidth } = useScreenWidth()
 
   return (
     <button
@@ -55,9 +52,9 @@ export const Duck = ({ animationNumber, handleDuckClicked }: DuckProps) => {
         'duration-300 cursor-crosshair flex',
         getDuckAnimation(animationNumber)
       )}
-      {...(width && width > 767 && { onPointerDown: handleDuckClicked })}
+      {...(screenWidth > 767 && { onPointerDown: handleDuckClicked })}
     >
-      {width && width <= 767 && (
+      {screenWidth <= 767 && (
         <span
           id="duckSpan"
           className="w-6 h-6 absolute left-2 top-2 cursor-crosshair"
