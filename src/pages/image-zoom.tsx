@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
 import { useScreenWidth } from '../hooks/useScreenWidth'
 import { Spinner } from '../components/Spinner'
+import Image from 'next/image'
 
 const INITIAL_IMAGE =
   'https://p4.wallpaperbetter.com/wallpaper/582/909/234/best-desktop-hd-nature-pic-1920x1080-wallpaper-preview.jpg'
@@ -129,7 +130,13 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <img
+          className="icon-spin fixed left-[calc(50%-40px)] top-[calc(50%-40px)] sm:top-[calc(25%-40px)]"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2Dgz9S4EBAOmRcha1XvPYADyLxb1roXJ5Zmh1NgE&s"
+          alt=""
+        />
+      )}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
@@ -147,7 +154,6 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
-            loading="lazy"
           />
           <div
             id="draggable-box"
@@ -168,7 +174,6 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            loading="lazy"
             onLoad={() => setIsLoading(false)}
           />
         </div>
@@ -177,7 +182,7 @@ const ImageZoom = () => {
         onClick={() => document.getElementById('file-input')?.click()}
         className={classNames(
           'flex mx-auto mt-4 rounded-full bg-green-300 text-xl py-3',
-          'px-10 select-none outline-none duration-200 active:bg-green-400 active:scale-75'
+          'px-10 select-none outline-none duration-200 active:bg-green-400 active:scale-90'
         )}
       >
         Select an image
