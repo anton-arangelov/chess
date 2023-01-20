@@ -2,7 +2,7 @@ export const Spinner = () => {
   return (
     <div>
       <svg
-        className="h-20 w-20 animate-spin fixed left-[calc(50%-40px)] top-[calc(50%-40px)]"
+        className="h-20 w-20 fixed left-[calc(50%-40px)] top-[calc(50%-40px)] sm:top-[calc(25%-40px)] icon-spin"
         viewBox="3 3 18 18"
       >
         <path

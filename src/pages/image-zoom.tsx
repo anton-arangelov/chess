@@ -129,9 +129,7 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {isLoading && (
-        <div className="loader fixed left-[calc(50%-40px)] top-[calc(50%-40px)] sm:top-[calc(25%-40px)]" />
-      )}
+      {isLoading && <Spinner />}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
