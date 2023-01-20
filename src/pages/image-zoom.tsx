@@ -16,7 +16,10 @@ const ImageZoom = () => {
   const [mouseInsideBoxY, setMouseInsideBoxY] = useState(0)
   const [isDraggableBoxClicked, setIsDraggableBoxClicked] = useState(false)
   const [img, setImg] = useState(INITIAL_IMAGE)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState({
+    imageOneIsLoading: false,
+    imageTwoIsLoading: false
+  })
 
   const heightRef = useRef(0)
   const widthRef = useRef(0)
@@ -111,7 +114,7 @@ const ImageZoom = () => {
       return
     }
     const url = URL.createObjectURL(e.target.files?.[0])
-    setIsLoading(true)
+    setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
     setImg(URL.createObjectURL(e.target.files?.[0]))
   }
 
@@ -130,12 +133,15 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {isLoading && <Spinner />}
+      {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && (
+        <Spinner />
+      )}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
           {
-            'opacity-0': isLoading
+            'opacity-0':
+              isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
           }
         )}
       >
@@ -148,6 +154,11 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
+            onLoad={() => {
+              setIsLoading(prev => {
+                return { ...prev, imageOneIsLoading: false }
+              })
+            }}
           />
           <div
             id="draggable-box"
@@ -168,11 +179,11 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            onLoad={() =>
-              setTimeout(() => {
-                setIsLoading(false)
-              }, 0)
-            }
+            onLoad={() => {
+              setIsLoading(prev => {
+                return { ...prev, imageTwoIsLoading: false }
+              })
+            }}
           />
         </div>
       </div>
