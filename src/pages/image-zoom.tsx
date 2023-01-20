@@ -113,9 +113,6 @@ const ImageZoom = () => {
     const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading(true)
     setImg(URL.createObjectURL(e.target.files?.[0]))
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
   }
 
   useEffect(() => {
@@ -171,7 +168,11 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            // onLoad={() => setIsLoading(false)}
+            onLoad={() =>
+              setTimeout(() => {
+                setIsLoading(false)
+              }, 0)
+            }
           />
         </div>
       </div>
