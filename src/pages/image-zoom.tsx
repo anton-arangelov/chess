@@ -109,8 +109,11 @@ const ImageZoom = () => {
     if (!file.match(/\.(jpeg|jpg|gif|png)$/)) {
       return
     }
+    const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading(true)
-    setImg(URL.createObjectURL(e.target.files?.[0]))
+    setTimeout(() => {
+      setImg(url)
+    }, 0)
   }
 
   useEffect(() => {
@@ -146,7 +149,6 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
-            loading="lazy"
             onLoad={() => setIsLoading(false)}
           />
           <div
