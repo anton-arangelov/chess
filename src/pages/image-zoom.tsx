@@ -1,5 +1,7 @@
+import classNames from 'classnames'
 import { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
 import { useScreenWidth } from '../hooks/useScreenWidth'
+import { Spinner } from '../components/Spinner'
 
 const INITIAL_IMAGE =
   'https://p4.wallpaperbetter.com/wallpaper/582/909/234/best-desktop-hd-nature-pic-1920x1080-wallpaper-preview.jpg'
@@ -13,6 +15,7 @@ const ImageZoom = () => {
   const [mouseInsideBoxY, setMouseInsideBoxY] = useState(0)
   const [isDraggableBoxClicked, setIsDraggableBoxClicked] = useState(false)
   const [img, setImg] = useState(INITIAL_IMAGE)
+  const [isLoading, setIsLoading] = useState(true)
 
   const heightRef = useRef(0)
   const widthRef = useRef(0)
@@ -102,13 +105,12 @@ const ImageZoom = () => {
   }
 
   const handleImageUpload = (e: BaseSyntheticEvent) => {
-    {
-      const file = e?.target?.files?.[0]?.name ?? ''
-      if (!file.match(/\.(jpeg|jpg|gif|png)$/)) {
-        return
-      }
-      setImg(URL.createObjectURL(e.target.files?.[0]))
+    const file = e?.target?.files?.[0]?.name ?? ''
+    if (!file.match(/\.(jpeg|jpg|gif|png)$/)) {
+      return
     }
+    setIsLoading(true)
+    setImg(URL.createObjectURL(e.target.files?.[0]))
   }
 
   useEffect(() => {
@@ -126,7 +128,15 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      <div className="flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center">
+      {isLoading && <Spinner />}
+      <div
+        className={classNames(
+          'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
+          {
+            'opacity-0': isLoading
+          }
+        )}
+      >
         <div
           className="h-[300px] md:h-[500px] w-[300px] md:w-[500px] touch-none"
           id="game-map"
@@ -136,6 +146,7 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
+            onLoad={() => setIsLoading(false)}
           />
           <div
             id="draggable-box"
