@@ -147,6 +147,7 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
+            loading="lazy"
           />
           <div
             id="draggable-box"
@@ -167,13 +168,17 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
+            loading="lazy"
             onLoad={() => setIsLoading(false)}
           />
         </div>
       </div>
       <button
         onClick={() => document.getElementById('file-input')?.click()}
-        className="flex mx-auto mt-4 rounded-full bg-green-300 text-xl py-3 px-10 select-none"
+        className={classNames(
+          'flex mx-auto mt-4 rounded-full bg-green-300 text-xl py-3',
+          'px-10 select-none outline-none duration-200 active:bg-green-400 active:scale-75'
+        )}
       >
         Select an image
       </button>
