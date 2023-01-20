@@ -180,9 +180,11 @@ const ImageZoom = () => {
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
             onLoad={() => {
-              setIsLoading(prev => {
-                return { ...prev, imageTwoIsLoading: false }
-              })
+              setTimeout(() => {
+                setIsLoading(prev => {
+                  return { ...prev, imageTwoIsLoading: false }
+                })
+              }, 200)
             }}
           />
         </div>
