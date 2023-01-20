@@ -7,7 +7,7 @@ import Image from 'next/image'
 const INITIAL_IMAGE =
   'https://p4.wallpaperbetter.com/wallpaper/582/909/234/best-desktop-hd-nature-pic-1920x1080-wallpaper-preview.jpg'
 
-type CustomEvent = BaseSyntheticEvent & { clientY: number; clientX: number }
+type CustomEvent = BaseSyntheticEvent & { pageY: number; clientX: number }
 
 const ImageZoom = () => {
   const [draggableBoxX, setDraggableBoxX] = useState(0)
@@ -32,17 +32,17 @@ const ImageZoom = () => {
       return
     }
 
-    if (e.clientY - mouseInsideBoxY < 0) {
+    if (e.pageY - mouseInsideBoxY < 0) {
       setDraggableBoxY(0)
     }
-    if (e.clientY - mouseInsideBoxY > heightRef.current - 50) {
+    if (e.pageY - mouseInsideBoxY > heightRef.current - 50) {
       setDraggableBoxY(heightRef.current - 50)
     }
     if (
-      e.clientY - mouseInsideBoxY >= 0 &&
-      e.clientY - mouseInsideBoxY <= heightRef.current - 50
+      e.pageY - mouseInsideBoxY >= 0 &&
+      e.pageY - mouseInsideBoxY <= heightRef.current - 50
     ) {
-      setDraggableBoxY(e.clientY - mouseInsideBoxY)
+      setDraggableBoxY(e.pageY - mouseInsideBoxY)
     }
 
     if (e.clientX - mouseInsideBoxX < offsetLeftRef.current) {
@@ -70,17 +70,17 @@ const ImageZoom = () => {
 
     setIsDraggableBoxClicked(true)
 
-    if (e.clientY >= 25 && e.clientY <= heightRef.current - 25) {
-      setDraggableBoxY(e.clientY - 25)
+    if (e.pageY >= 25 && e.pageY <= heightRef.current - 25) {
+      setDraggableBoxY(e.pageY - 25)
       setMouseInsideBoxY(25)
     }
-    if (e.clientY < 25) {
+    if (e.pageY < 25) {
       setDraggableBoxY(0)
-      setMouseInsideBoxY(e.clientY)
+      setMouseInsideBoxY(e.pageY)
     }
-    if (e.clientY > 475) {
+    if (e.pageY > heightRef.current - 25) {
       setDraggableBoxY(heightRef.current - 50)
-      setMouseInsideBoxY(e.clientY - heightRef.current + 50)
+      setMouseInsideBoxY(e.pageY - heightRef.current + 50)
     }
 
     if (
@@ -104,7 +104,7 @@ const ImageZoom = () => {
 
   const handleDraggableBoxPointerDown = (e: CustomEvent) => {
     setIsDraggableBoxClicked(true)
-    setMouseInsideBoxY(e.clientY - draggableBoxY)
+    setMouseInsideBoxY(e.pageY - draggableBoxY)
     setMouseInsideBoxX(e.clientX - draggableBoxX)
   }
 
@@ -115,7 +115,11 @@ const ImageZoom = () => {
     }
     const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
-    setImg(URL.createObjectURL(e.target.files?.[0]))
+    setImg('')
+    setTimeout(() => {
+      //   setImg(URL.createObjectURL(e.target.files?.[0]))
+      setImg(INITIAL_IMAGE)
+    }, 200)
   }
 
   useEffect(() => {
@@ -180,11 +184,9 @@ const ImageZoom = () => {
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
             onLoad={() => {
-              setTimeout(() => {
-                setIsLoading(prev => {
-                  return { ...prev, imageTwoIsLoading: false }
-                })
-              }, 200)
+              setIsLoading(prev => {
+                return { ...prev, imageTwoIsLoading: false }
+              })
             }}
           />
         </div>
