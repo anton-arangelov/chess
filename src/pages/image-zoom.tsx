@@ -15,7 +15,7 @@ const ImageZoom = () => {
   const [mouseInsideBoxY, setMouseInsideBoxY] = useState(0)
   const [isDraggableBoxClicked, setIsDraggableBoxClicked] = useState(false)
   const [img, setImg] = useState(INITIAL_IMAGE)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const heightRef = useRef(0)
   const widthRef = useRef(0)
