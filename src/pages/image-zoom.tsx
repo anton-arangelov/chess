@@ -113,6 +113,9 @@ const ImageZoom = () => {
     const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading(true)
     setImg(URL.createObjectURL(e.target.files?.[0]))
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 500)
   }
 
   useEffect(() => {
@@ -130,13 +133,7 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {isLoading && (
-        <img
-          className="icon-spin fixed left-[calc(50%-40px)] top-[calc(50%-40px)] sm:top-[calc(25%-40px)]"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2Dgz9S4EBAOmRcha1XvPYADyLxb1roXJ5Zmh1NgE&s"
-          alt=""
-        />
-      )}
+      {isLoading && <Spinner />}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
@@ -174,7 +171,7 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            onLoad={() => setIsLoading(false)}
+            // onLoad={() => setIsLoading(false)}
           />
         </div>
       </div>
