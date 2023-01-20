@@ -117,8 +117,7 @@ const ImageZoom = () => {
     setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
     setImg('')
     setTimeout(() => {
-      //   setImg(URL.createObjectURL(e.target.files?.[0]))
-      setImg(INITIAL_IMAGE)
+      setImg(URL.createObjectURL(e.target.files?.[0]))
     }, 200)
   }
 
