@@ -146,6 +146,7 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
+            loading="lazy"
             onLoad={() => setIsLoading(false)}
           />
           <div
