@@ -155,11 +155,11 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
+            loading="lazy"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageOneIsLoading: false }
               })
-              alert('hi')
             }}
           />
           <div
@@ -181,6 +181,7 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
+            loading="lazy"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageTwoIsLoading: false }
