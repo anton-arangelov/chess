@@ -158,9 +158,11 @@ const ImageZoom = () => {
               }
             )}
             onLoad={() => {
-              setIsLoading(prev => {
-                return { ...prev, imageOneIsLoading: false }
-              })
+              setTimeout(() => {
+                setIsLoading(prev => {
+                  return { ...prev, imageOneIsLoading: false }
+                })
+              }, 10)
             }}
           />
           <div
@@ -189,9 +191,11 @@ const ImageZoom = () => {
               }
             )}
             onLoad={() => {
-              setIsLoading(prev => {
-                return { ...prev, imageTwoIsLoading: false }
-              })
+              setTimeout(() => {
+                setIsLoading(prev => {
+                  return { ...prev, imageTwoIsLoading: false }
+                })
+              }, 10)
             }}
           />
         </div>
