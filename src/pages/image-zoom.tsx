@@ -128,34 +128,6 @@ const ImageZoom = () => {
     setDraggableBoxY(0)
   }, [screenWidth])
 
-  const handleOnLoadImageOne = () => {
-    const image = document.getElementById('first-image') as HTMLElement & {
-      complete: boolean
-      naturalHeight: number
-    }
-    if (!image?.complete || !image?.naturalHeight) {
-      handleOnLoadImageOne()
-      return
-    }
-    setIsLoading(prev => {
-      return { ...prev, imageOneIsLoading: false }
-    })
-  }
-
-  const handleOnLoadImageTwo = () => {
-    const image = document.getElementById('second-image') as HTMLElement & {
-      complete: boolean
-      naturalHeight: number
-    }
-    if (!image?.complete || !image?.naturalHeight) {
-      handleOnLoadImageTwo()
-      return
-    }
-    setIsLoading(prev => {
-      return { ...prev, imageTwoIsLoading: false }
-    })
-  }
-
   return (
     <div
       onPointerUp={() => setIsDraggableBoxClicked(false)}
@@ -183,8 +155,12 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
-            id="first-image"
-            onLoad={handleOnLoadImageOne}
+            onLoad={() => {
+              setIsLoading(prev => {
+                return { ...prev, imageOneIsLoading: false }
+              })
+              alert('hi')
+            }}
           />
           <div
             id="draggable-box"
@@ -202,11 +178,14 @@ const ImageZoom = () => {
                 (screenWidth >= 1024 ? 5 : 3)
               )
             }}
-            id="second-image"
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            onLoad={handleOnLoadImageTwo}
+            onLoad={() => {
+              setIsLoading(prev => {
+                return { ...prev, imageTwoIsLoading: false }
+              })
+            }}
           />
         </div>
       </div>
