@@ -133,7 +133,7 @@ const ImageZoom = () => {
       complete: boolean
       naturalHeight: number
     }
-    if (image && !image.complete && !image.naturalHeight) {
+    if (!image?.complete || !image?.naturalHeight) {
       handleOnLoadImageOne()
       return
     }
@@ -147,7 +147,7 @@ const ImageZoom = () => {
       complete: boolean
       naturalHeight: number
     }
-    if (image && !image.complete && !image.naturalHeight) {
+    if (!image?.complete || !image?.naturalHeight) {
       handleOnLoadImageTwo()
       return
     }
