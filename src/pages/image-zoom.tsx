@@ -136,7 +136,12 @@ const ImageZoom = () => {
       const imgOne = document.getElementById('image-one')
       const imgTwo = document.getElementById('image-two')
       const check = () => {
-        if (imgOne?.complete && imgTwo?.complete) {
+        if (
+          imgOne?.complete &&
+          imgOne?.naturalHeight &&
+          imgTwo?.complete &&
+          imgTwo?.naturalHeight
+        ) {
           setTest(false)
           return
         }
