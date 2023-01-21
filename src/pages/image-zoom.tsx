@@ -117,6 +117,7 @@ const ImageZoom = () => {
     setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
     setImg('')
     setImg(URL.createObjectURL(e.target.files?.[0]))
+    setTest(true)
   }
 
   useEffect(() => {
@@ -128,15 +129,30 @@ const ImageZoom = () => {
     setDraggableBoxY(0)
   }, [screenWidth])
 
+  const [test, setTest] = useState(false)
+
+  useEffect(() => {
+    if (!isLoading.imageOneIsLoading && !isLoading.imageTwoIsLoading) {
+      const imgOne = document.getElementById('image-one')
+      const imgTwo = document.getElementById('image-two')
+      const check = () => {
+        if (imgOne?.complete && imgTwo?.complete) {
+          setTest(false)
+          return
+        }
+        check()
+      }
+      check()
+    }
+  }, [isLoading.imageOneIsLoading, isLoading.imageTwoIsLoading])
+
   return (
     <div
       onPointerUp={() => setIsDraggableBoxClicked(false)}
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && (
-        <Spinner />
-      )}
+      {test && <Spinner />}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center'
@@ -157,6 +173,7 @@ const ImageZoom = () => {
                   isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
               }
             )}
+            id="image-one"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageOneIsLoading: false }
@@ -188,6 +205,7 @@ const ImageZoom = () => {
                   isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
               }
             )}
+            id="image-two"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageTwoIsLoading: false }
