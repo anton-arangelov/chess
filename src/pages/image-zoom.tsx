@@ -134,9 +134,9 @@ const ImageZoom = () => {
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && (
-        <Spinner />
-      )}
+      {/* {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && ( */}
+      <Spinner />
+      {/* )} */}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center'
@@ -158,11 +158,9 @@ const ImageZoom = () => {
               }
             )}
             onLoad={() => {
-              setTimeout(() => {
-                setIsLoading(prev => {
-                  return { ...prev, imageOneIsLoading: false }
-                })
-              }, 10)
+              setIsLoading(prev => {
+                return { ...prev, imageOneIsLoading: false }
+              })
             }}
           />
           <div
@@ -191,11 +189,9 @@ const ImageZoom = () => {
               }
             )}
             onLoad={() => {
-              setTimeout(() => {
-                setIsLoading(prev => {
-                  return { ...prev, imageTwoIsLoading: false }
-                })
-              }, 10)
+              setIsLoading(prev => {
+                return { ...prev, imageTwoIsLoading: false }
+              })
             }}
           />
         </div>
