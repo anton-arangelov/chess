@@ -20,6 +20,8 @@ const ImageZoom = () => {
     imageOneIsLoading: false,
     imageTwoIsLoading: false
   })
+  const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
+    useState(false)
 
   const heightRef = useRef(0)
   const widthRef = useRef(0)
@@ -115,6 +117,7 @@ const ImageZoom = () => {
     }
     const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
+    setShouldShowLoadingSpinner(true)
     setImg('')
     setImg(URL.createObjectURL(e.target.files?.[0]))
   }
@@ -128,21 +131,24 @@ const ImageZoom = () => {
     setDraggableBoxY(0)
   }, [screenWidth])
 
+  useEffect(() => {
+    if (!isLoading.imageOneIsLoading && !isLoading.imageTwoIsLoading) {
+      setShouldShowLoadingSpinner(false)
+    }
+  }, [isLoading.imageOneIsLoading, isLoading.imageTwoIsLoading])
+
   return (
     <div
       onPointerUp={() => setIsDraggableBoxClicked(false)}
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && (
-        <Spinner />
-      )}
+      {shouldShowLoadingSpinner && <Spinner />}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center',
           {
-            'opacity-0':
-              isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
+            'opacity-0': shouldShowLoadingSpinner
           }
         )}
       >
@@ -155,7 +161,6 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="w-full h-full select-none pointer-events-none"
-            loading="lazy"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageOneIsLoading: false }
@@ -181,7 +186,6 @@ const ImageZoom = () => {
             src={img}
             alt=""
             className="absolute select-none h-[1800px] md:h-[5000px] max-w-[900px] md:max-w-[2500px] w-[900px] md:w-[2500px] pointer-events-none"
-            loading="lazy"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageTwoIsLoading: false }
