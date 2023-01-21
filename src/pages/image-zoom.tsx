@@ -132,16 +132,11 @@ const ImageZoom = () => {
   const [test, setTest] = useState(false)
 
   useEffect(() => {
-    if (!isLoading.imageOneIsLoading && !isLoading.imageTwoIsLoading) {
+    if (!isLoading.imageOneIsLoading && !isLoading.imageTwoIsLoading && test) {
       const imgOne = document.getElementById('image-one')
       const imgTwo = document.getElementById('image-two')
       const check = () => {
-        if (
-          imgOne?.complete &&
-          imgOne?.naturalHeight &&
-          imgTwo?.complete &&
-          imgTwo?.naturalHeight
-        ) {
+        if (document.readyState === 'complete') {
           setTest(false)
           return
         }
@@ -149,7 +144,7 @@ const ImageZoom = () => {
       }
       check()
     }
-  }, [isLoading.imageOneIsLoading, isLoading.imageTwoIsLoading])
+  }, [isLoading.imageOneIsLoading, isLoading.imageTwoIsLoading, test])
 
   return (
     <div
