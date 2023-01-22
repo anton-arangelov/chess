@@ -113,11 +113,9 @@ const ImageZoom = () => {
     if (!file.match(/\.(jpeg|jpg|gif|png)$/)) {
       return
     }
-    const url = URL.createObjectURL(e.target.files?.[0])
     setIsLoading({ imageOneIsLoading: true, imageTwoIsLoading: true })
     setImg('')
     setImg(URL.createObjectURL(e.target.files?.[0]))
-    setTest(true)
   }
 
   useEffect(() => {
@@ -129,30 +127,15 @@ const ImageZoom = () => {
     setDraggableBoxY(0)
   }, [screenWidth])
 
-  const [test, setTest] = useState(false)
-
-  useEffect(() => {
-    if (!isLoading.imageOneIsLoading && !isLoading.imageTwoIsLoading && test) {
-      const imgOne = document.getElementById('image-one')
-      const imgTwo = document.getElementById('image-two')
-      const check = () => {
-        if (document.readyState === 'complete') {
-          setTest(false)
-          return
-        }
-        check()
-      }
-      check()
-    }
-  }, [isLoading.imageOneIsLoading, isLoading.imageTwoIsLoading, test])
-
   return (
     <div
       onPointerUp={() => setIsDraggableBoxClicked(false)}
       className="h-screen"
       onPointerMove={handleDrag}
     >
-      {test && <Spinner />}
+      {(isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading) && (
+        <Spinner />
+      )}
       <div
         className={classNames(
           'flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-6 items-center'
@@ -173,7 +156,6 @@ const ImageZoom = () => {
                   isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
               }
             )}
-            id="image-one"
             onLoad={() => {
               setIsLoading(prev => {
                 return { ...prev, imageOneIsLoading: false }
@@ -205,11 +187,12 @@ const ImageZoom = () => {
                   isLoading.imageOneIsLoading || isLoading.imageTwoIsLoading
               }
             )}
-            id="image-two"
             onLoad={() => {
-              setIsLoading(prev => {
-                return { ...prev, imageTwoIsLoading: false }
-              })
+              setTimeout(() => {
+                setIsLoading(prev => {
+                  return { ...prev, imageTwoIsLoading: false }
+                })
+              }, 1000)
             }}
           />
         </div>
